@@ -1,0 +1,106 @@
+{
+	"name": "KaizalaDataIngestionToStaging",
+	"properties": {
+		"activities": [
+			{
+				"name": "Read Json File",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "KaizalaDataIngestion",
+						"type": "DatasetReference",
+						"parameters": {
+							"FilePath": {
+								"value": "@pipeline().parameters.FilePath",
+								"type": "Expression"
+							},
+							"FolderPath": {
+								"value": "@pipeline().parameters.FolderPath",
+								"type": "Expression"
+							},
+							"ContainerName": " "
+						}
+					}
+				}
+			},
+			{
+				"name": "Insert data to Stg",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Read Json File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": {
+						"value": "@pipeline().parameters.ProcName",
+						"type": "Expression"
+					},
+					"storedProcedureParameters": {
+						"json": {
+							"value": {
+								"value": "@string(activity('Read Json File').output.firstRow)",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"FilePath": {
+				"type": "string"
+			},
+			"ProcName": {
+				"type": "string"
+			},
+			"FolderPath": {
+				"type": "string"
+			},
+			"DestinationProcessed": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "1. MainPipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-25T13:08:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

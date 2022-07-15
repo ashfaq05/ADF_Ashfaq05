@@ -1,0 +1,259 @@
+{
+	"name": "EnquiryHistoricExtraction",
+	"properties": {
+		"activities": [
+			{
+				"name": "Create Json Files",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[Kaizala].[usp_InsertEnquiryHistoricExtract]"
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Get Id for extraction",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Create Json Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT Id FROM [Kaizala].[EnquiryHistoricExtract] with(nolock)\n WHERE id between 1 and 5000\n",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach Id",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Id for extraction",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Id for extraction').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy Json to File",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "Select '['+EnquiryJson+']' FROM [Kaizala].[EnquiryHistoricExtract] WITH(NOLOCK) WHERE id =@{item().id}",
+										"type": "Expression"
+									},
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"parallelCopies": 5
+							},
+							"inputs": [
+								{
+									"referenceName": "OutputAzurSQL",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": "Default"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "EnquiryHistoricalExtract",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@item().Id",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Get Id for extraction new 5000",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "ForEach Id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT Id FROM [Kaizala].[EnquiryHistoricExtract] with(nolock)\n WHERE id between 5001 and 10000\n",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach Id Pending",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Id for extraction new 5000",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Id for extraction').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy Json to File Next",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "Select '['+EnquiryJson+']' FROM [Kaizala].[EnquiryHistoricExtract] WITH(NOLOCK) WHERE id =@{item().id}",
+										"type": "Expression"
+									},
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"parallelCopies": 5
+							},
+							"inputs": [
+								{
+									"referenceName": "OutputAzurSQL",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": "Default"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "EnquiryHistoricalExtract",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@item().Id",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "5. Kaizala Historic Data"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-25T13:08:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

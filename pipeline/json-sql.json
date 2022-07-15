@@ -1,0 +1,131 @@
+{
+	"name": "json-sql",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_5lc",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "enquiryjson//"
+					},
+					{
+						"name": "Destination",
+						"value": "dbo.EHjson"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"validateDataConsistency": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['CustomerId']"
+								},
+								"sink": {
+									"name": "CustomerId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['EnquiryId']"
+								},
+								"sink": {
+									"name": "EnquiryId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FdwEnquiryId']"
+								},
+								"sink": {
+									"name": "FdwEnquiryId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FollowUpDueDate']"
+								},
+								"sink": {
+									"name": "FollowUpDueDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"path": "$['DealerCode']"
+								},
+								"sink": {
+									"name": "DealerCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['DealerBranchCode']"
+								},
+								"sink": {
+									"name": "DealerBranchCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['State']"
+								},
+								"sink": {
+									"name": "State",
+									"type": "String"
+								}
+							}
+						],
+						"mapComplexValuesToString": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_5lc",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_5lc",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}

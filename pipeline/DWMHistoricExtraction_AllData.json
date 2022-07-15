@@ -1,0 +1,117 @@
+{
+	"name": "DWMHistoricExtraction_AllData",
+	"properties": {
+		"activities": [
+			{
+				"name": "Select First 5000 id",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "Select ID FROM kaizala.DWMHistoricalExtract with(nolock) WHERE ID between 1 and 5000",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach Id",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Select First 5000 id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Select First 5000 id').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data to file",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "select DWMJson from kaizala.DWMHistoricalExtract  WITH(NOLOCK) WHERE id =@{item().id}",
+										"type": "Expression"
+									},
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings",
+										"copyBehavior": "FlattenHierarchy"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"dataIntegrationUnits": 2
+							},
+							"inputs": [
+								{
+									"referenceName": "OutputAzurSQL",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": "Default"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DWMhistoricextract",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": "@item().Id"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "5. Kaizala Historic Data"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-25T13:08:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

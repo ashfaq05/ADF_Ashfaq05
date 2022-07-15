@@ -1,0 +1,586 @@
+{
+	"name": "DailyAnalysisAllIndiaDatashare_scoringpoints",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select * from Presales.BatchEnquiryScore_PNA",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "EnquiryGUID"
+								},
+								"sink": {
+									"name": "EnquiryGUID",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerGUID"
+								},
+								"sink": {
+									"name": "CustomerGUID",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "DealerCode"
+								},
+								"sink": {
+									"name": "DealerCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DealerBranchCode"
+								},
+								"sink": {
+									"name": "DealerBranchCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ModifiedDate"
+								},
+								"sink": {
+									"name": "ModifiedDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquiryLocalCode"
+								},
+								"sink": {
+									"name": "EnquiryLocalCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CustCode"
+								},
+								"sink": {
+									"name": "CustCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ModelCode"
+								},
+								"sink": {
+									"name": "ModelCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CurStatus"
+								},
+								"sink": {
+									"name": "CurStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Topcode"
+								},
+								"sink": {
+									"name": "Topcode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "HPCategory"
+								},
+								"sink": {
+									"name": "HPCategory",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ExchangedManufacturer"
+								},
+								"sink": {
+									"name": "ExchangedManufacturer",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CustAge"
+								},
+								"sink": {
+									"name": "CustAge",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "IrrigatedOwned"
+								},
+								"sink": {
+									"name": "IrrigatedOwned",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "NonIrrigatedOwned"
+								},
+								"sink": {
+									"name": "NonIrrigatedOwned",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "BuyerSubTypeCode"
+								},
+								"sink": {
+									"name": "BuyerSubTypeCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ImpOwn"
+								},
+								"sink": {
+									"name": "ImpOwn",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "ImpLease"
+								},
+								"sink": {
+									"name": "ImpLease",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "TypeOfCrops"
+								},
+								"sink": {
+									"name": "TypeOfCrops",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "CropArea"
+								},
+								"sink": {
+									"name": "CropArea",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "IsMshree"
+								},
+								"sink": {
+									"name": "IsMshree",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "MShreeMembershipNo"
+								},
+								"sink": {
+									"name": "MShreeMembershipNo",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IsReferencedByOthers"
+								},
+								"sink": {
+									"name": "IsReferencedByOthers",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "economic_potential_index"
+								},
+								"sink": {
+									"name": "economic_potential_index",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "FinanceType"
+								},
+								"sink": {
+									"name": "FinanceType",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "serviceHistory"
+								},
+								"sink": {
+									"name": "serviceHistory",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "SalesOrderCreated"
+								},
+								"sink": {
+									"name": "SalesOrderCreated",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "Agri_bothuse"
+								},
+								"sink": {
+									"name": "Agri_bothuse",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "Agri_selfuse"
+								},
+								"sink": {
+									"name": "Agri_selfuse",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "Agri_hireuse"
+								},
+								"sink": {
+									"name": "Agri_hireuse",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "Non-Agri_bothuse"
+								},
+								"sink": {
+									"name": "Non-Agri_bothuse",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "Non-Agri_selfuse"
+								},
+								"sink": {
+									"name": "Non-Agri_selfuse",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "Non-Agri_hireuse"
+								},
+								"sink": {
+									"name": "Non-Agri_hireuse",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "ImplmntCode1"
+								},
+								"sink": {
+									"name": "ImplmntCode1",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ImplmntCode2"
+								},
+								"sink": {
+									"name": "ImplmntCode2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "InterestedInImplement"
+								},
+								"sink": {
+									"name": "InterestedInImplement",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "AgingOfEnquiry"
+								},
+								"sink": {
+									"name": "AgingOfEnquiry",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "StateCode"
+								},
+								"sink": {
+									"name": "StateCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquiryDate"
+								},
+								"sink": {
+									"name": "EnquiryDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquiryType"
+								},
+								"sink": {
+									"name": "EnquiryType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquirySourceCode"
+								},
+								"sink": {
+									"name": "EnquirySourceCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ExpDop"
+								},
+								"sink": {
+									"name": "ExpDop",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "SoilCode"
+								},
+								"sink": {
+									"name": "SoilCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CropCode"
+								},
+								"sink": {
+									"name": "CropCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Acres"
+								},
+								"sink": {
+									"name": "Acres",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerType"
+								},
+								"sink": {
+									"name": "CustomerType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "VillageCode"
+								},
+								"sink": {
+									"name": "VillageCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TehsilCode"
+								},
+								"sink": {
+									"name": "TehsilCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DistrictCode"
+								},
+								"sink": {
+									"name": "DistrictCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "OfficeVillageCode"
+								},
+								"sink": {
+									"name": "OfficeVillageCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PreferredAddress"
+								},
+								"sink": {
+									"name": "PreferredAddress",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ExchangePriceRate"
+								},
+								"sink": {
+									"name": "ExchangePriceRate",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AssetToBeExchanged"
+								},
+								"sink": {
+									"name": "AssetToBeExchanged",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RowID"
+								},
+								"sink": {
+									"name": "RowID",
+									"type": "Int32"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "OutputAzurSQL_ScoringPointsPipeline",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DevServerSQLtables_BatchScore",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Analysis data prep in staging table",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[AAP].[usp_StageBatchEnquiries_v4_DealerCodeUpdated]"
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Analysis data prep in staging table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 70
+				}
+			}
+		],
+		"folder": {
+			"name": "Analysis Share data"
+		},
+		"annotations": []
+	}
+}

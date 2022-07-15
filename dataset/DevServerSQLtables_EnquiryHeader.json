@@ -1,0 +1,394 @@
+{
+	"name": "DevServerSQLtables_EnquiryHeader",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDBDevServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EnquiryLocalCode",
+				"type": "varchar"
+			},
+			{
+				"name": "DealerCode",
+				"type": "varchar"
+			},
+			{
+				"name": "EnquiryOldCode",
+				"type": "varchar"
+			},
+			{
+				"name": "LocCode",
+				"type": "char"
+			},
+			{
+				"name": "EnquiryType",
+				"type": "char"
+			},
+			{
+				"name": "EnquiryDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "RefCode",
+				"type": "varchar"
+			},
+			{
+				"name": "CustCode",
+				"type": "varchar"
+			},
+			{
+				"name": "ServerCustCode",
+				"type": "varchar"
+			},
+			{
+				"name": "SmanCode",
+				"type": "varchar"
+			},
+			{
+				"name": "EnquirySourcePrefix",
+				"type": "varchar"
+			},
+			{
+				"name": "EnquirySourceCode",
+				"type": "varchar"
+			},
+			{
+				"name": "CampCode",
+				"type": "varchar"
+			},
+			{
+				"name": "RefName",
+				"type": "varchar"
+			},
+			{
+				"name": "RefCoName",
+				"type": "varchar"
+			},
+			{
+				"name": "InflncrName",
+				"type": "varchar"
+			},
+			{
+				"name": "InflncrCoName",
+				"type": "varchar"
+			},
+			{
+				"name": "TopPrefix",
+				"type": "varchar"
+			},
+			{
+				"name": "TopCode",
+				"type": "varchar"
+			},
+			{
+				"name": "TobPrefix",
+				"type": "varchar"
+			},
+			{
+				"name": "BuyerSubTypeCode",
+				"type": "varchar"
+			},
+			{
+				"name": "InstName",
+				"type": "varchar"
+			},
+			{
+				"name": "ModelCode",
+				"type": "varchar"
+			},
+			{
+				"name": "ImplmntCode1",
+				"type": "varchar"
+			},
+			{
+				"name": "ImplmntCode2",
+				"type": "varchar"
+			},
+			{
+				"name": "ExpDop",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "InitStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "FirstVisit",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "CurStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "NextVisitDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "ActiveFlag",
+				"type": "char"
+			},
+			{
+				"name": "LastModified",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "UserId",
+				"type": "varchar"
+			},
+			{
+				"name": "DocStatusCode",
+				"type": "varchar"
+			},
+			{
+				"name": "DealerBranchCode",
+				"type": "varchar"
+			},
+			{
+				"name": "JobCard",
+				"type": "varchar"
+			},
+			{
+				"name": "MsrCustCode",
+				"type": "varchar"
+			},
+			{
+				"name": "PadRefCard",
+				"type": "varchar"
+			},
+			{
+				"name": "MaOneGroupCd",
+				"type": "varchar"
+			},
+			{
+				"name": "PwccCode",
+				"type": "varchar"
+			},
+			{
+				"name": "IsDelete",
+				"type": "char"
+			},
+			{
+				"name": "SubmitType",
+				"type": "char"
+			},
+			{
+				"name": "SyncStatus",
+				"type": "char"
+			},
+			{
+				"name": "SyncRemark",
+				"type": "varchar"
+			},
+			{
+				"name": "SectorId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CreatedBy",
+				"type": "varchar"
+			},
+			{
+				"name": "CreatedDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "ModifiedBy",
+				"type": "varchar"
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "EnquiryFrom",
+				"type": "varchar"
+			},
+			{
+				"name": "MDMSSyncStatus",
+				"type": "char"
+			},
+			{
+				"name": "MechanicName",
+				"type": "varchar"
+			},
+			{
+				"name": "CustSmsStatus",
+				"type": "char"
+			},
+			{
+				"name": "salesmanSmsStatus",
+				"type": "char"
+			},
+			{
+				"name": "MsrDlrCode",
+				"type": "varchar"
+			},
+			{
+				"name": "brokerCode",
+				"type": "varchar"
+			},
+			{
+				"name": "CustContactReason",
+				"type": "varchar"
+			},
+			{
+				"name": "CustContactSubReason",
+				"type": "varchar"
+			},
+			{
+				"name": "Longitude",
+				"type": "varchar"
+			},
+			{
+				"name": "Latitude",
+				"type": "varchar"
+			},
+			{
+				"name": "DocsPending",
+				"type": "bit"
+			},
+			{
+				"name": "DocType",
+				"type": "varchar"
+			},
+			{
+				"name": "DocImage1",
+				"type": "varchar"
+			},
+			{
+				"name": "DocImage2",
+				"type": "varchar"
+			},
+			{
+				"name": "PropensityScore",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "CFPEnquiryId",
+				"type": "varchar"
+			},
+			{
+				"name": "EnquiryGUID",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "CustomerGUID",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "DestCreatedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CFPIsMaster",
+				"type": "bit"
+			},
+			{
+				"name": "CFPDeDupeID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "KAMCustomerGroupID",
+				"type": "varchar"
+			},
+			{
+				"name": "KAMID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PURCHASEDATE",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "BrokerMblNo",
+				"type": "varchar"
+			},
+			{
+				"name": "IsDemoRequired",
+				"type": "char"
+			},
+			{
+				"name": "IsFinanceRequired",
+				"type": "char"
+			},
+			{
+				"name": "LeadLocalCode_VC",
+				"type": "varchar"
+			},
+			{
+				"name": "LeadRemarks",
+				"type": "varchar"
+			},
+			{
+				"name": "NewsPaper",
+				"type": "varchar"
+			},
+			{
+				"name": "REFCUST_ID",
+				"type": "varchar"
+			},
+			{
+				"name": "CustomerCategorization",
+				"type": "varchar"
+			},
+			{
+				"name": "Is_PS_Processed",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PS_LastProcessedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ENQUIRY_TYPE_VC",
+				"type": "varchar"
+			},
+			{
+				"name": "InitialPropensityScore",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ResultCode",
+				"type": "varchar"
+			},
+			{
+				"name": "EEReasonName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "PreSales",
+			"table": "EnquiryHeader_NewDailyValidation"
+		}
+	}
+}

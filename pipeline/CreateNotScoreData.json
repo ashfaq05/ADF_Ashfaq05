@@ -1,0 +1,57 @@
+{
+	"name": "CreateNotScoreData",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetEnquiries",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[AAP].[usp_StageBatchEnquiries_v4]",
+					"storedProcedureParameters": {
+						"EndDate": {
+							"value": {
+								"value": "@pipeline().parameters.EndTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"StartDate": {
+							"value": {
+								"value": "@pipeline().parameters.StartTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"StartTime": {
+				"type": "string",
+				"defaultValue": "2020-04-01"
+			},
+			"EndTime": {
+				"type": "string",
+				"defaultValue": "2021-12-09"
+			}
+		},
+		"folder": {
+			"name": "4. AAP - AI&ML"
+		},
+		"annotations": []
+	}
+}

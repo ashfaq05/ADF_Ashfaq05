@@ -1,0 +1,12 @@
+{
+	"name": "LS_AzureKeyVault",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Connect to key vault to fetch sensitive information",
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://mazvpkvtshse.vault.azure.net/"
+		}
+	}
+}

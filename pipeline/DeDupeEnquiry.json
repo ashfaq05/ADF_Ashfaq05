@@ -1,0 +1,398 @@
+{
+	"name": "DeDupeEnquiry",
+	"properties": {
+		"activities": [
+			{
+				"name": "FilterEnquiryData",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "GetEnqMaxDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[DEDUP].[usp_FilterEnquiryDataForDeDupe]",
+					"storedProcedureParameters": {
+						"LastDateUpdatedValue": {
+							"value": {
+								"value": "@activity('GetEnqConfigValues').output.FirstRow.LastDateUpdatedValue",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"MaxDate": {
+							"value": {
+								"value": "@activity('GetEnqMaxDate').output.FirstRow.MaxDate",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@{pipeline().RunId}",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TriggerDatetime": {
+							"value": {
+								"value": "@formatDateTime(pipeline().TriggerTime,'yyyy-MM-ddTHH:mm:ss')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"IsFullLoad": {
+							"value": {
+								"value": "@pipeline().parameters.DeDupeIsFullLoad",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DealerCodeColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.DealerCodeColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DealerBranchCodeColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.DealerBranchCodeColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"CustCodeColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.CustCodeColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ModelCodeColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.ModelCodeColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ImplmntCode1ColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.ImplmntCode1ColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ImplmntCode2ColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.ImplmntCode2ColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "UpdateEnquiryData",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "EnquiryDeDupe",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[DEDUP].[usp_UpdateEnquiryDataForDeDupe]",
+					"storedProcedureParameters": {
+						"PipelineRunId": {
+							"value": {
+								"value": "@{pipeline().RunId}",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TriggerDatetime": {
+							"value": {
+								"value": "@formatDateTime(pipeline().TriggerTime,'yyyy-MM-ddTHH:mm:ss')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"LastDateUpdatedValue": {
+							"value": {
+								"value": "@activity('GetEnqMaxDate').output.FirstRow.MaxDate",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DealerCodeColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.DealerCodeColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DealerBranchCodeColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.DealerBranchCodeColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"CustCodeColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.CustCodeColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "GetEnqConfigValues",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "SELECT * from @{pipeline().parameters.ConfigTable} Where \nSourceTableName= '[PreSales].[EnquiryHeader]' IF @@ROWCOUNT = 0 THROW 50000,'No rows in configuration table for DeDupe!',1",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					}
+				}
+			},
+			{
+				"name": "GetEnqMaxDate",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "GetEnqConfigValues",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "SELECT ISNULL(MAX(@{activity('GetEnqConfigValues').output.FirstRow.DateColumnName}), GETDATE()) AS MaxDate FROM @{activity('GetEnqConfigValues').output.FirstRow.SourceTableName}",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					}
+				}
+			},
+			{
+				"name": "EnquiryDeDupe",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "FilterEnquiryData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/DeDupeEnquiry",
+					"baseParameters": {
+						"jdbcHostname": {
+							"value": "@pipeline().parameters.jdbcHostname",
+							"type": "Expression"
+						},
+						"jdbcDatabase": {
+							"value": "@pipeline().parameters.jdbcDatabase",
+							"type": "Expression"
+						},
+						"jdbcPort": {
+							"value": "@pipeline().parameters.jdbcPort",
+							"type": "Expression"
+						},
+						"DealerCodeColumnName": {
+							"value": "@pipeline().parameters.DealerCodeColumnName",
+							"type": "Expression"
+						},
+						"DealerBranchCodeColumnName": {
+							"value": "@pipeline().parameters.DealerBranchCodeColumnName",
+							"type": "Expression"
+						},
+						"CustCodeColumnName": {
+							"value": "@pipeline().parameters.CustCodeColumnName",
+							"type": "Expression"
+						},
+						"ModelCodeColumnName": {
+							"value": "@pipeline().parameters.ModelCodeColumnName",
+							"type": "Expression"
+						},
+						"ImplmntCode1ColumnName": {
+							"value": "@pipeline().parameters.ImplmntCode1ColumnName",
+							"type": "Expression"
+						},
+						"ImplmntCode2ColumnName": {
+							"value": "@pipeline().parameters.ImplmntCode2ColumnName",
+							"type": "Expression"
+						},
+						"jdbcUserName": {
+							"value": "@pipeline().parameters.jdbcUserName",
+							"type": "Expression"
+						},
+						"keyvaultname": {
+							"value": "@pipeline().parameters.keyvaultname",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_DataBricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"ConfigTable": {
+				"type": "string",
+				"defaultValue": "ETL.PipelineTables"
+			},
+			"DeDupeIsFullLoad": {
+				"type": "int",
+				"defaultValue": 0
+			},
+			"jdbcHostname": {
+				"type": "string",
+				"defaultValue": "mazvpsqldtpl01.database.windows.net"
+			},
+			"jdbcDatabase": {
+				"type": "string",
+				"defaultValue": "mazvpsdbdtpl"
+			},
+			"jdbcUserName": {
+				"type": "string",
+				"defaultValue": "sqluser"
+			},
+			"CustCodeColumnName": {
+				"type": "string",
+				"defaultValue": "CustCode"
+			},
+			"DealerCodeColumnName": {
+				"type": "string",
+				"defaultValue": "DealerCode"
+			},
+			"DealerBranchCodeColumnName": {
+				"type": "string",
+				"defaultValue": "DealerBranchCode"
+			},
+			"ModelCodeColumnName": {
+				"type": "string",
+				"defaultValue": "ModelCode"
+			},
+			"ImplmntCode1ColumnName": {
+				"type": "string",
+				"defaultValue": "ImplmntCode1"
+			},
+			"ImplmntCode2ColumnName": {
+				"type": "string",
+				"defaultValue": "ImplmntCode2"
+			},
+			"jdbcPort": {
+				"type": "string",
+				"defaultValue": "1433"
+			},
+			"keyvaultname": {
+				"type": "string",
+				"defaultValue": "mazvpkvtshse"
+			}
+		},
+		"folder": {
+			"name": "3. DeDupePipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-31T08:02:42Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

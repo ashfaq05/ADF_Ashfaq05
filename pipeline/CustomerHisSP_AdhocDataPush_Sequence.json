@@ -1,0 +1,299 @@
+{
+	"name": "CustomerHisSP_AdhocDataPush_Sequence",
+	"properties": {
+		"activities": [
+			{
+				"name": "CustomerHisSP",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CustomerHisSP adhoc list",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[Kaizala].[USP_InsertCustomerHistoricalExtractAfterList]",
+					"storedProcedureParameters": {
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@{pipeline().RunId}",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TriggerDatetime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "executecopy",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ExecuteCopytoCustomerblob",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "CustomerHistoricExtraction_To_CosmosDB-1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ExecuteCopytoCustomerblob",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CustomerHisSP",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "CustomerIncHistoricExtractionAllData",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ExtractionTableName": "kaizala.customerHistoricalExtract",
+						"offset": "0",
+						"fetch": "5000"
+					}
+				}
+			},
+			{
+				"name": "Stored enquiry json",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "executecopy",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[Kaizala].[usp_InsertEnquiryHistoricalExtractAfterListstatewise2]",
+					"storedProcedureParameters": {
+						"PipelineName": {
+							"value": "@pipeline().Pipeline",
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": "@{pipeline().RunId}",
+							"type": "String"
+						},
+						"TriggerDatetime": {
+							"value": "@pipeline().TriggerTime",
+							"type": "Datetime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Execute Enquiry Copy to blob",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Stored enquiry json",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EnquiryIncHistoricExtractionAllData_AdHoc",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ExtractionTableName": "Kaizala.EnquiryHistoricExtractstatewise2",
+						"offset": "0",
+						"fetch": "5000"
+					}
+				}
+			},
+			{
+				"name": "Execute Enquiry Copy to cosmos",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Enquiry Copy to blob",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EnquiryHistoricExtraction_To_CosmosDB_adhoc",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "CustomerHisSP adhoc list",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Enquiry adhoc list",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[Kaizala].[USP_LoadCustomerIncrementalExtraction_Historicallist]",
+					"storedProcedureParameters": {
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@{pipeline().RunId}",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TriggerDatetime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Enquiry adhoc list",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[Kaizala].[usp_LoadEnquiryIncrementalExtraction_Historicalliststatewise]",
+					"storedProcedureParameters": {
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@{pipeline().RunId}",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TriggerDatetime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"ExtractionTableName": {
+				"type": "string",
+				"defaultValue": "kaizala.customerHistoricalExtract"
+			},
+			"offset": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"fetch": {
+				"type": "string",
+				"defaultValue": "5000"
+			}
+		},
+		"folder": {
+			"name": "5. Kaizala Historic Data"
+		},
+		"annotations": []
+	}
+}

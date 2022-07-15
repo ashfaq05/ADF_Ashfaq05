@@ -1,0 +1,39 @@
+{
+	"name": "DownScale AAS",
+	"properties": {
+		"activities": [
+			{
+				"name": "DownscaleAAS",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://management.azure.com/subscriptions/0dfed373-7f38-429e-8704-6524988a0a6a/resourceGroups/mazvprgpdtpl/providers/Microsoft.AnalysisServices/servers/mazvpaasdtpl01/?api-version=2017-08-01",
+					"method": "PATCH",
+					"body": {
+						"sku": {
+							"capacity": 1,
+							"name": "S0",
+							"tier": "Standard"
+						}
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://management.azure.com"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "7. Analysis Service"
+		},
+		"annotations": []
+	}
+}

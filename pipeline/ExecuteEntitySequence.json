@@ -1,0 +1,64 @@
+{
+	"name": "ExecuteEntitySequence",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Customer",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "KaizalaSendIncrementaData_AllData_Customer",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute Enquiry",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Customer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "KaizalaSendIncrementalData_AllData_Enquiry",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute Followup",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Enquiry",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "KaizalaSendIncrementalData_AllData_followup",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "1. MainPipelines"
+		},
+		"annotations": []
+	}
+}

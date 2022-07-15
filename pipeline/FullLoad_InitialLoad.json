@@ -1,0 +1,625 @@
+{
+	"name": "FullLoad_InitialLoad",
+	"properties": {
+		"activities": [
+			{
+				"name": "Pipeline Start",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ETL].[usp_LoadPipelineRunningStatus]",
+					"storedProcedureParameters": {
+						"DataFactoryName": {
+							"value": {
+								"value": "@{pipeline().DataFactory}",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@{pipeline().RunId}",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TriggerDatetime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "GET CONFIG",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Pipeline Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT * from @{pipeline().parameters.ConfigTable} Where  IsIncremental = 0\nIF @@ROWCOUNT = 0 THROW 50000,'No rows in configuration table!',1",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "FDW",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "GET CONFIG",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GET CONFIG').output.value",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@and(equals(Item().Source,'FDW'),equals(Item().Enabled,true))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FDW",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('FDW').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "IF FDW DATE PRESENT",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(item().IsDateColumnPresent,true)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "GET COUNT FDW",
+										"type": "Lookup",
+										"dependsOn": [
+											{
+												"activity": "GET MAX DATE FDW",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlSource",
+												"sqlReaderQuery": {
+													"value": "SELECT COUNT(1) AS Count FROM @{item().SourceTableName} ",
+													"type": "Expression"
+												},
+												"partitionOption": "None"
+											},
+											"dataset": {
+												"referenceName": "InputOnPrem",
+												"type": "DatasetReference"
+											},
+											"firstRowOnly": false
+										}
+									},
+									{
+										"name": "LOG FDW",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "GET COUNT FDW",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[ETL].[usp_LoadParameterTracking]",
+											"storedProcedureParameters": {
+												"DestinationTableName": {
+													"value": {
+														"value": "@{item().DestinationTableName}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"PipelieRunId": {
+													"value": {
+														"value": "@{pipeline().RunId}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"SelectStmtParameter": {
+													"value": {
+														"value": "SELECT @{item().Columns} FROM @{item().SourceTableName}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"SFDCMaxUpdatedDate": {
+													"value": {
+														"value": "@activity('GET MAX DATE FDW').output.firstrow.MAXDATE",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"SourceTableName": {
+													"value": {
+														"value": "@{item().SourceTableName}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"StageLastUpdatedDate": {
+													"value": {
+														"value": "@item().LastDateUpdatedValue",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_AzureSQLDB",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "Copy FDW",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "LOG FDW",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlSource",
+												"sqlReaderQuery": {
+													"value": "SELECT @{item().Columns} FROM @{item().SourceTableName}",
+													"type": "Expression"
+												},
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "SqlSink",
+												"writeBatchSize": 10000,
+												"preCopyScript": {
+													"value": "TRUNCATE TABLE @{item().DestinationTableName}",
+													"type": "Expression"
+												},
+												"writeBehavior": "insert"
+											},
+											"enableStaging": false
+										},
+										"inputs": [
+											{
+												"referenceName": "InputOnPrem",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "OutputAzurSQL",
+												"type": "DatasetReference",
+												"parameters": {
+													"TableName": {
+														"value": "@{item().DestinationTableName}",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "GET COUNT STAGING",
+										"type": "Lookup",
+										"dependsOn": [
+											{
+												"activity": "Copy FDW",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlSource",
+												"sqlReaderQuery": {
+													"value": "SELECT COUNT(*) AS DSTCOUNT FROM @{item().DestinationTableName}",
+													"type": "Expression"
+												},
+												"partitionOption": "None"
+											},
+											"dataset": {
+												"referenceName": "OutputAzurSQL",
+												"type": "DatasetReference",
+												"parameters": {
+													"TableName": "Default"
+												}
+											}
+										}
+									},
+									{
+										"name": "UPDATE DATE FDW",
+										"description": "UPDATE THE MAX OF DATE IN CONGIF TABLE",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "INSERT_UPDATE FDW TABLES",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[ETL].[usp_UpdateLastDateUpdated]",
+											"storedProcedureParameters": {
+												"id": {
+													"value": {
+														"value": "@{item().id}",
+														"type": "Expression"
+													},
+													"type": "Int16"
+												},
+												"LastDateUpdatedValue": {
+													"value": {
+														"value": "@{activity('GET MAX DATE FDW').output.firstRow.MAXDATE}",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_AzureSQLDB",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "INSERT_UPDATE FDW TABLES",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "GET COUNT STAGING",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": {
+												"value": "@{item().UpdateSP}",
+												"type": "Expression"
+											},
+											"storedProcedureParameters": {
+												"PipelineRunId": {
+													"value": {
+														"value": "@{pipeline().RunId}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"PipelineName": {
+													"value": {
+														"value": "@{pipeline().Pipeline}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"TriggerDatetime": {
+													"value": {
+														"value": "@pipeline().TriggerTime",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_AzureSQLDB",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "MAIL NOTIFICATION",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "UPDATE DATE FDW",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[ETL].[usp_LoadMailNotification]",
+											"storedProcedureParameters": {
+												"DestinationCount": {
+													"value": {
+														"value": "@activity('GET COUNT STAGING').output.firstrow.DSTCOUNT",
+														"type": "Expression"
+													},
+													"type": "Int64"
+												},
+												"DestinationTableName": {
+													"value": {
+														"value": "@{item().DestinationTableName}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"PipelineName": {
+													"value": {
+														"value": "@{pipeline().Pipeline}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"PipelineRunId": {
+													"value": {
+														"value": "@{pipeline().RunId}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"PipelineTriggerRunId": {
+													"value": {
+														"value": "@{pipeline().TriggerId}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"SourceCount": {
+													"value": {
+														"value": "@activity('GET COUNT FDW').output.value[0].count",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"SourceTableName": {
+													"value": {
+														"value": "@{item().SourceTableName}",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"TriggerDatetime": {
+													"value": {
+														"value": "@pipeline().TriggerTime",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"TriggerType": {
+													"value": {
+														"value": "@{pipeline().TriggerType}",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_AzureSQLDB",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "GET MAX DATE FDW",
+										"type": "Lookup",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlSource",
+												"sqlReaderQuery": {
+													"value": "SELECT ISNULL(MAX(@{item().DateColumnName}),GETDATE()) as MAXDATE FROM @{item().SourceTableName}",
+													"type": "Expression"
+												},
+												"partitionOption": "None"
+											},
+											"dataset": {
+												"referenceName": "InputOnPrem",
+												"type": "DatasetReference"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Pipeline End",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ETL].[usp_UpdatePipelineRunningStatus]",
+					"storedProcedureParameters": {
+						"DataFactoryName": {
+							"value": {
+								"value": "@pipeline().DataFactory",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"ConfigTable": {
+				"type": "String",
+				"defaultValue": "[ETL].[pipelinefullload]"
+			}
+		},
+		"folder": {
+			"name": "2. Initial_Load"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

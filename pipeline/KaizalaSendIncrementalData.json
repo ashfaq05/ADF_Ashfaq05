@@ -1,0 +1,322 @@
+{
+	"name": "KaizalaSendIncrementalData",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get data to send",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT Id FROM ',pipeline().parameters.ExtractionTableName,' WHERE IsProcessed = 0 order by Id ASC')",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach Id",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get data to send",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get data to send').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Get Json to send",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT ',pipeline().parameters.JsonColumnName, ' AS JsonToSend FROM ',pipeline().parameters.ExtractionTableName, ' WHERE Id = ',item().Id)",
+										"type": "Expression"
+									},
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "OutputAzurSQL",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": "Default"
+									}
+								}
+							}
+						},
+						{
+							"name": "Call Azure API",
+							"type": "AzureFunctionActivity",
+							"dependsOn": [
+								{
+									"activity": "Get Json to send",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"functionName": {
+									"value": "@concat('IngestData/',pipeline().parameters.APIEventType)",
+									"type": "Expression"
+								},
+								"method": "POST",
+								"body": {
+									"value": "@activity('Get Json to send').output.FirstRow.JsonToSend",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_KaizalaDataExtraction",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Log Error Message",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Call Azure API",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[ETL].[usp_LoadKaizalaErrorMessages]",
+								"storedProcedureParameters": {
+									"ActivityName": {
+										"value": "Azure Function",
+										"type": "String"
+									},
+									"entity": {
+										"value": {
+											"value": "@pipeline().parameters.Entity",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"ErrorMessage": {
+										"value": {
+											"value": "@concat(activity('Call Azure API').error.message,'failureType:',activity('Call Azure API').error.failureType)",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"JsonData": {
+										"value": {
+											"value": "@activity('Get Json to send').output.FirstRow.JsonToSend",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"PipelineName": {
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"PipelineRunId": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Process": {
+										"value": "Extraction",
+										"type": "String"
+									},
+									"TriggerDatetime": {
+										"value": {
+											"value": "@pipeline().TriggerTime",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AzureSQLDB",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Mark Row as Success",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Call Azure API",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[Kaizala].[usp_MarkJsonAsSent]",
+								"storedProcedureParameters": {
+									"Entity": {
+										"value": {
+											"value": "@pipeline().parameters.Entity",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Id": {
+										"value": {
+											"value": "@item().Id",
+											"type": "Expression"
+										},
+										"type": "Int64"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AzureSQLDB",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Mark Row as Processed",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Log Error Message",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[Kaizala].[usp_MarkJsonAsSent]",
+								"storedProcedureParameters": {
+									"Entity": {
+										"value": {
+											"value": "@pipeline().parameters.Entity",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Id": {
+										"value": {
+											"value": "@item().Id",
+											"type": "Expression"
+										},
+										"type": "Int64"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AzureSQLDB",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"ExtractionTableName": {
+				"type": "string",
+				"defaultValue": "Kaizala.EnquiryIncrementalExtract"
+			},
+			"JsonColumnName": {
+				"type": "string",
+				"defaultValue": "EnquiryJson"
+			},
+			"APIEventType": {
+				"type": "string",
+				"defaultValue": "IngestEnquiry"
+			},
+			"Entity": {
+				"type": "string",
+				"defaultValue": "Enquiry"
+			},
+			"offset": {
+				"type": "string",
+				"defaultValue": "@variables('offset')"
+			},
+			"fetch": {
+				"type": "string",
+				"defaultValue": "@variables('remainingrow')"
+			}
+		},
+		"folder": {
+			"name": "1. MainPipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-25T13:08:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

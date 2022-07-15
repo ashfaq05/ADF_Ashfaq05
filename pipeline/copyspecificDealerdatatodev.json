@@ -1,0 +1,828 @@
+{
+	"name": "copyspecificDealerdatatodev",
+	"properties": {
+		"description": "copy specific Dealer data to dev table :  [PreSales].[EnquiryHeader_BRM351270]",
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select * from PreSales.EnquiryHeader Where DealerCode='BRM351270' and CurStatus!='CL' and IsDelete='N' and ActiveFlag='A'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "EnquiryLocalCode"
+								},
+								"sink": {
+									"name": "EnquiryLocalCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DealerCode"
+								},
+								"sink": {
+									"name": "DealerCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquiryOldCode"
+								},
+								"sink": {
+									"name": "EnquiryOldCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LocCode"
+								},
+								"sink": {
+									"name": "LocCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquiryType"
+								},
+								"sink": {
+									"name": "EnquiryType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquiryDate"
+								},
+								"sink": {
+									"name": "EnquiryDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "RefCode"
+								},
+								"sink": {
+									"name": "RefCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CustCode"
+								},
+								"sink": {
+									"name": "CustCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ServerCustCode"
+								},
+								"sink": {
+									"name": "ServerCustCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SmanCode"
+								},
+								"sink": {
+									"name": "SmanCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquirySourcePrefix"
+								},
+								"sink": {
+									"name": "EnquirySourcePrefix",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquirySourceCode"
+								},
+								"sink": {
+									"name": "EnquirySourceCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CampCode"
+								},
+								"sink": {
+									"name": "CampCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RefName"
+								},
+								"sink": {
+									"name": "RefName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RefCoName"
+								},
+								"sink": {
+									"name": "RefCoName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "InflncrName"
+								},
+								"sink": {
+									"name": "InflncrName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "InflncrCoName"
+								},
+								"sink": {
+									"name": "InflncrCoName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TopPrefix"
+								},
+								"sink": {
+									"name": "TopPrefix",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TopCode"
+								},
+								"sink": {
+									"name": "TopCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TobPrefix"
+								},
+								"sink": {
+									"name": "TobPrefix",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BuyerSubTypeCode"
+								},
+								"sink": {
+									"name": "BuyerSubTypeCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "InstName"
+								},
+								"sink": {
+									"name": "InstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ModelCode"
+								},
+								"sink": {
+									"name": "ModelCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ImplmntCode1"
+								},
+								"sink": {
+									"name": "ImplmntCode1",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ImplmntCode2"
+								},
+								"sink": {
+									"name": "ImplmntCode2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ExpDop"
+								},
+								"sink": {
+									"name": "ExpDop",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "InitStatus"
+								},
+								"sink": {
+									"name": "InitStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FirstVisit"
+								},
+								"sink": {
+									"name": "FirstVisit",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CurStatus"
+								},
+								"sink": {
+									"name": "CurStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NextVisitDate"
+								},
+								"sink": {
+									"name": "NextVisitDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ActiveFlag"
+								},
+								"sink": {
+									"name": "ActiveFlag",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LastModified"
+								},
+								"sink": {
+									"name": "LastModified",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "UserId"
+								},
+								"sink": {
+									"name": "UserId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DocStatusCode"
+								},
+								"sink": {
+									"name": "DocStatusCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DealerBranchCode"
+								},
+								"sink": {
+									"name": "DealerBranchCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "JobCard"
+								},
+								"sink": {
+									"name": "JobCard",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MsrCustCode"
+								},
+								"sink": {
+									"name": "MsrCustCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PadRefCard"
+								},
+								"sink": {
+									"name": "PadRefCard",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MaOneGroupCd"
+								},
+								"sink": {
+									"name": "MaOneGroupCd",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PwccCode"
+								},
+								"sink": {
+									"name": "PwccCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IsDelete"
+								},
+								"sink": {
+									"name": "IsDelete",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SubmitType"
+								},
+								"sink": {
+									"name": "SubmitType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SyncStatus"
+								},
+								"sink": {
+									"name": "SyncStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SyncRemark"
+								},
+								"sink": {
+									"name": "SyncRemark",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SectorId"
+								},
+								"sink": {
+									"name": "SectorId",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "CreatedBy"
+								},
+								"sink": {
+									"name": "CreatedBy",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CreatedDate"
+								},
+								"sink": {
+									"name": "CreatedDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ModifiedBy"
+								},
+								"sink": {
+									"name": "ModifiedBy",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ModifiedDate"
+								},
+								"sink": {
+									"name": "ModifiedDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquiryFrom"
+								},
+								"sink": {
+									"name": "EnquiryFrom",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MDMSSyncStatus"
+								},
+								"sink": {
+									"name": "MDMSSyncStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MechanicName"
+								},
+								"sink": {
+									"name": "MechanicName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CustSmsStatus"
+								},
+								"sink": {
+									"name": "CustSmsStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "salesmanSmsStatus"
+								},
+								"sink": {
+									"name": "salesmanSmsStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MsrDlrCode"
+								},
+								"sink": {
+									"name": "MsrDlrCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "brokerCode"
+								},
+								"sink": {
+									"name": "brokerCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CustContactReason"
+								},
+								"sink": {
+									"name": "CustContactReason",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CustContactSubReason"
+								},
+								"sink": {
+									"name": "CustContactSubReason",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Longitude"
+								},
+								"sink": {
+									"name": "Longitude",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Latitude"
+								},
+								"sink": {
+									"name": "Latitude",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DocsPending"
+								},
+								"sink": {
+									"name": "DocsPending",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"name": "DocType"
+								},
+								"sink": {
+									"name": "DocType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DocImage1"
+								},
+								"sink": {
+									"name": "DocImage1",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DocImage2"
+								},
+								"sink": {
+									"name": "DocImage2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "InitialPropensityScore"
+								},
+								"sink": {
+									"name": "InitialPropensityScore",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "CFPEnquiryId"
+								},
+								"sink": {
+									"name": "CFPEnquiryId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EnquiryGUID"
+								},
+								"sink": {
+									"name": "EnquiryGUID",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerGUID"
+								},
+								"sink": {
+									"name": "CustomerGUID",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "DestCreatedDate"
+								},
+								"sink": {
+									"name": "DestCreatedDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CFPIsMaster"
+								},
+								"sink": {
+									"name": "CFPIsMaster",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"name": "CFPDeDupeID"
+								},
+								"sink": {
+									"name": "CFPDeDupeID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "KAMCustomerGroupID"
+								},
+								"sink": {
+									"name": "KAMCustomerGroupID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "KAMID"
+								},
+								"sink": {
+									"name": "KAMID",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "PURCHASEDATE"
+								},
+								"sink": {
+									"name": "PURCHASEDATE",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "BrokerMblNo"
+								},
+								"sink": {
+									"name": "BrokerMblNo",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IsFinanceRequired"
+								},
+								"sink": {
+									"name": "IsFinanceRequired",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IsDemoRequired"
+								},
+								"sink": {
+									"name": "IsDemoRequired",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NewsPaper"
+								},
+								"sink": {
+									"name": "NewsPaper",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LeadRemarks"
+								},
+								"sink": {
+									"name": "LeadRemarks",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LeadLocalCode_VC"
+								},
+								"sink": {
+									"name": "LeadLocalCode_VC",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "REFCUST_ID"
+								},
+								"sink": {
+									"name": "REFCUST_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerCategorization"
+								},
+								"sink": {
+									"name": "CustomerCategorization",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Is_PS_Processed"
+								},
+								"sink": {
+									"name": "Is_PS_Processed",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "PS_LastProcessedDate"
+								},
+								"sink": {
+									"name": "PS_LastProcessedDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ENQUIRY_TYPE_VC"
+								},
+								"sink": {
+									"name": "ENQUIRY_TYPE_VC",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PropensityScore"
+								},
+								"sink": {
+									"name": "PropensityScore",
+									"type": "Double"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "OutputAzurSQL_BRM",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DevServerSQLtables_EnquiryHeader_BRM",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}

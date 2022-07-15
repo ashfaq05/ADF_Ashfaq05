@@ -1,0 +1,94 @@
+{
+	"name": "DEDUP_CustProfile_Source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSQLDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "CustName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustCoName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VillageCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MobileNo",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DealerCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DealerBranchCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PreferredAddress",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CreatedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "EnquiryRefCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OfficeVillageCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IsIncremental",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VillageCodeNew",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsValidVillageCode",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IsMahindraCustomer",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IsCompetitionCustomer",
+				"type": "int",
+				"precision": 10
+			}
+		]
+	}
+}

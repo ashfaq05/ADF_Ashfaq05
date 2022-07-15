@@ -1,0 +1,110 @@
+{
+	"name": "OutputAzurSQL_EmpTrigger",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSQLDB",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TableName": {
+				"type": "String",
+				"defaultValue": "Default"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"structure": [
+			{
+				"name": "PWCCCode",
+				"type": "String"
+			},
+			{
+				"name": "RecordId",
+				"type": "Int32"
+			},
+			{
+				"name": "DealerCode",
+				"type": "String"
+			},
+			{
+				"name": "CustCode",
+				"type": "String"
+			},
+			{
+				"name": "HrsRun",
+				"type": "Decimal"
+			},
+			{
+				"name": "PwccFeedback",
+				"type": "String"
+			},
+			{
+				"name": "LastServiceDone",
+				"type": "DateTime"
+			},
+			{
+				"name": "LastServiceDoneAt",
+				"type": "String"
+			},
+			{
+				"name": "ProductFeedback",
+				"type": "String"
+			},
+			{
+				"name": "IdeaNextUnique",
+				"type": "String"
+			},
+			{
+				"name": "Emp_Code",
+				"type": "String"
+			},
+			{
+				"name": "BranchCode",
+				"type": "String"
+			},
+			{
+				"name": "CreatedBy",
+				"type": "String"
+			},
+			{
+				"name": "CreatedDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "ModifiedBy",
+				"type": "String"
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "VisitDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "CustDealerCode",
+				"type": "String"
+			},
+			{
+				"name": "CustDealerBranchCode",
+				"type": "String"
+			},
+			{
+				"name": "latitude",
+				"type": "String"
+			},
+			{
+				"name": "longitude",
+				"type": "String"
+			}
+		],
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().TableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

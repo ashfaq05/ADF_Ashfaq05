@@ -1,0 +1,44 @@
+{
+	"name": "4kds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Test01NpCC.csv",
+				"container": "40ktest01"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "CFP Unique ID",
+				"type": "String"
+			},
+			{
+				"name": "EnquiryLocalCode",
+				"type": "String"
+			},
+			{
+				"name": "DealerCode",
+				"type": "String"
+			},
+			{
+				"name": "DealerBranchCode",
+				"type": "String"
+			},
+			{
+				"name": "CurStatus",
+				"type": "String"
+			}
+		]
+	}
+}

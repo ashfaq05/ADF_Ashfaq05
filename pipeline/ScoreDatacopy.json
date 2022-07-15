@@ -1,0 +1,88 @@
+{
+	"name": "ScoreDatacopy",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlServerSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "StateCode"
+								},
+								"sink": {
+									"name": "StateCode",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"name": "StateName"
+								},
+								"sink": {
+									"name": "StateName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Festival"
+								},
+								"sink": {
+									"name": "Festival",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Importance"
+								},
+								"sink": {
+									"name": "Importance",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "OutputAzurSQL_ScoreAnalysis",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ScoreAnalysisSQlDev",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}

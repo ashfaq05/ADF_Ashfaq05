@@ -1,0 +1,430 @@
+{
+	"name": "DeDupeCustomer",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetCustConfigValues",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "SELECT * from @{pipeline().parameters.ConfigTable} Where \nSourceTableName= '[Master].[CustProfile]' IF @@ROWCOUNT = 0 THROW 50000,'No rows in configuration table for DeDupe!',1",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					}
+				}
+			},
+			{
+				"name": "GetCustMaxDate",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "GetCustConfigValues",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "SELECT ISNULL(MAX(@{activity('GetCustConfigValues').output.FirstRow.DateColumnName}), GETDATE()) AS MaxDate FROM @{activity('GetCustConfigValues').output.FirstRow.SourceTableName}",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					}
+				}
+			},
+			{
+				"name": "CustomerDeDupe",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "IsFullLoad",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/DeDupeCustomer",
+					"baseParameters": {
+						"jdbcHostname": {
+							"value": "@pipeline().parameters.jdbcHostname",
+							"type": "Expression"
+						},
+						"jdbcDatabase": {
+							"value": "@pipeline().parameters.jdbcDatabase",
+							"type": "Expression"
+						},
+						"jdbcPort": {
+							"value": "@pipeline().parameters.jdbcPort",
+							"type": "Expression"
+						},
+						"CustNameColumnName": {
+							"value": "@pipeline().parameters.CustNameColumnName",
+							"type": "Expression"
+						},
+						"CustCoNameColumnName": {
+							"value": "@pipeline().parameters.CustCoNameColumnName",
+							"type": "Expression"
+						},
+						"VillageCodeColumnName": {
+							"value": "@pipeline().parameters.VillageCodeColumnName",
+							"type": "Expression"
+						},
+						"MobileNoColumnName": {
+							"value": "@pipeline().parameters.MobileNoColumnName",
+							"type": "Expression"
+						},
+						"jdbcUserName": {
+							"value": "@pipeline().parameters.jdbcUserName",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_DataBricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "UpdateCustomerData",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CustomerDeDupe",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[DEDUP].[usp_UpdateCustomerDataForDeDupe]",
+					"storedProcedureParameters": {
+						"PipelineRunId": {
+							"value": {
+								"value": "@{pipeline().RunId}",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TriggerDatetime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"LastDateUpdatedValue": {
+							"value": {
+								"value": "@activity('GetCustMaxDate').output.FirstRow.MaxDate",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"CustNameColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.CustNameColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"CustCoNameColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.CustCoNameColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"VillageCodeColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.VillageCodeColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"MobileNoColumnName": {
+							"value": {
+								"value": "@pipeline().parameters.MobileNoColumnName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"IsFullLoad": {
+							"value": {
+								"value": "@pipeline().parameters.DeDupeIsFullLoad",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "IsFullLoad",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "GetCustMaxDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.DeDupeIsFullLoad,1)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "FilterCustomerData_InrementalLoad",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Shared/FilterCustomerSource_IncrementalLoad",
+								"baseParameters": {
+									"MaxDate": {
+										"value": "@string(formatDateTime(activity('GetCustMaxDate').output.FirstRow.MaxDate,'yyyy-MM-dd'))",
+										"type": "Expression"
+									},
+									"jdbcHostname": {
+										"value": "@pipeline().parameters.jdbcHostname",
+										"type": "Expression"
+									},
+									"jdbcDatabase": {
+										"value": "@pipeline().parameters.jdbcDatabase",
+										"type": "Expression"
+									},
+									"jdbcPort": {
+										"value": "@pipeline().parameters.jdbcPort",
+										"type": "Expression"
+									},
+									"jdbcUserName": {
+										"value": "@pipeline().parameters.jdbcUserName",
+										"type": "Expression"
+									},
+									"keyvaultname": {
+										"value": "@pipeline().parameters.keyvaultname",
+										"type": "Expression"
+									},
+									"CustCoNameColumnName": {
+										"value": "@pipeline().parameters.CustCoNameColumnName",
+										"type": "Expression"
+									},
+									"CustNameColumnName": {
+										"value": "@pipeline().parameters.CustNameColumnName",
+										"type": "Expression"
+									},
+									"MobileNoColumnName ": {
+										"value": "@pipeline().parameters.MobileNoColumnName",
+										"type": "Expression"
+									},
+									"VillageCodeColumnName ": {
+										"value": "@pipeline().parameters.VillageCodeColumnName",
+										"type": "Expression"
+									},
+									"LastDateUpdatedValue": {
+										"value": "@string(formatDateTime(activity('GetCustConfigValues').output.FirstRow.LastDateUpdatedValue,'yyyy-MM-dd'))",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_DataBricks",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "FilterCustomerData_FullLoad",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Shared/FilterCustomerSource_FullLoad",
+								"baseParameters": {
+									"LastModifiedDate": {
+										"value": "@formatDateTime(pipeline().TriggerTime,'yyyy-MM-dd')",
+										"type": "Expression"
+									},
+									"jdbcHostname": {
+										"value": "@pipeline().parameters.jdbcHostname",
+										"type": "Expression"
+									},
+									"jdbcDatabase": {
+										"value": "@pipeline().parameters.jdbcDatabase",
+										"type": "Expression"
+									},
+									"jdbcPort": {
+										"value": "@pipeline().parameters.jdbcPort",
+										"type": "Expression"
+									},
+									"jdbcUsername": {
+										"value": "@pipeline().parameters.jdbcUserName",
+										"type": "Expression"
+									},
+									"keyvaultname": {
+										"value": "@pipeline().parameters.keyvaultname",
+										"type": "Expression"
+									},
+									"CustCoNameColumnName": {
+										"value": "@pipeline().parameters.CustCoNameColumnName",
+										"type": "Expression"
+									},
+									"CustNameColumnName": {
+										"value": "@pipeline().parameters.CustNameColumnName",
+										"type": "Expression"
+									},
+									"MobileNoColumnName ": {
+										"value": "@pipeline().parameters.MobileNoColumnName",
+										"type": "Expression"
+									},
+									"VillageCodeColumnName ": {
+										"value": "@pipeline().parameters.VillageCodeColumnName",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_DataBricks",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"ConfigTable": {
+				"type": "string",
+				"defaultValue": "ETL.PipelineTables"
+			},
+			"DeDupeIsFullLoad": {
+				"type": "int",
+				"defaultValue": 0
+			},
+			"jdbcHostname": {
+				"type": "string",
+				"defaultValue": "mazvpsqldtpl01.database.windows.net"
+			},
+			"jdbcDatabase": {
+				"type": "string",
+				"defaultValue": "mazvpsdbdtpl"
+			},
+			"jdbcUserName": {
+				"type": "string",
+				"defaultValue": "dtpladmin"
+			},
+			"CustNameColumnName": {
+				"type": "string",
+				"defaultValue": "CustName"
+			},
+			"CustCoNameColumnName": {
+				"type": "string",
+				"defaultValue": "CustCoName"
+			},
+			"VillageCodeColumnName": {
+				"type": "string",
+				"defaultValue": "VillageCode"
+			},
+			"MobileNoColumnName": {
+				"type": "string",
+				"defaultValue": "MobileNo"
+			},
+			"jdbcPort": {
+				"type": "string",
+				"defaultValue": "1433"
+			},
+			"keyvaultname": {
+				"type": "string",
+				"defaultValue": "mazvpkvtshse"
+			}
+		},
+		"folder": {
+			"name": "3. DeDupePipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-31T08:02:42Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

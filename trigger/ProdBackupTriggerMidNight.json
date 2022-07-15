@@ -1,0 +1,24 @@
+{
+	"name": "ProdBackupTriggerMidNight",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "ProdAASBackup",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 24,
+				"startTime": "2021-12-07T00:02:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}

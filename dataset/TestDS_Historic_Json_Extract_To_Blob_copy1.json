@@ -1,0 +1,20 @@
+{
+	"name": "TestDS_Historic_Json_Extract_To_Blob_copy1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_KaizalaDataIngestion",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "*",
+				"folderPath": "*",
+				"container": "testdir"
+			}
+		},
+		"schema": {}
+	}
+}

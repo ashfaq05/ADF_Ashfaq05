@@ -1,0 +1,124 @@
+{
+	"name": "DailyHisIncEntityPipeline_New_copypush",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Customer Process",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "CustomerIncHistoricExtractionAllData_Daily",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute Customer from Blob to Cosmos",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Customer Process",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "CustomerHistoricExtraction_To_CosmosDBNew",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute Enquiry Process",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Customer from Blob to Cosmos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EnquiryIncHistoricExtraction_AllData",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute Enquiry  from Blob to Cosmos",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Enquiry Process",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EnquiryHistoricExtraction_To_CosmosDB",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute FollowupProcess",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Enquiry  from Blob to Cosmos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "FollowupHistoricExtraction_AllData",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute Followup from Blob to Cosmos",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute FollowupProcess",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "FollowUpHistoricExtraction_To_CosmosDB",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "5. Kaizala Historic Data"
+		},
+		"annotations": []
+	}
+}

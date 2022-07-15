@@ -1,0 +1,164 @@
+{
+	"name": "ExecutePipelineSequence",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Master Load",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "MasterTablesLoad",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ConfigTable": "[ETL].[PipelineTables]",
+						"DeDupeIsFullLoad": "1"
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline Transaction Load",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Master Load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "TransactionTablesLoad",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ConfigTable": "[ETL].[PipelineTables]"
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline Full Load",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline Transaction Load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "FullLoad",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ConfigTable": "[ETL].[PipelineTables]"
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline DW Load",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline Full Load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DWLoad",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute Customer Dedup",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline DW Load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DeDupeCustomer",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": false,
+					"parameters": {
+						"ConfigTable": "ETL.PipelineTables",
+						"DeDupeIsFullLoad": "1",
+						"jdbcHostname": "mazvpsqldtpl01.database.windows.net",
+						"jdbcDatabase": "mazvpsdbdtpl",
+						"jdbcUserName": "dtpladmin",
+						"CustNameColumnName": "CustName",
+						"CustCoNameColumnName": "CustCoName",
+						"VillageCodeColumnName": "VillageCode",
+						"MobileNoColumnName": "MobileNo",
+						"jdbcPort": "1433",
+						"keyvaultname": "mazvpkvtshse"
+					}
+				}
+			},
+			{
+				"name": "Execute Enquiry Dedup",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline DW Load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DeDupeEnquiry",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": false,
+					"parameters": {
+						"ConfigTable": "ETL.PipelineTables\n",
+						"DeDupeIsFullLoad": "1",
+						"jdbcHostname": "mazvpsqldtpl01.database.windows.net",
+						"jdbcDatabase": "mazvpsdbdtpl",
+						"jdbcUserName": "dtpladmin",
+						"CustCodeColumnName": "CustCode",
+						"DealerCodeColumnName": "DealerCode",
+						"DealerBranchCodeColumnName": "DealerBranchCode",
+						"ModelCodeColumnName": "ModelCode",
+						"ImplmntCode1ColumnName": "ImplmntCode1",
+						"ImplmntCode2ColumnName": "ImplmntCode2",
+						"jdbcPort": "1433",
+						"keyvaultname": "mazvpkvtshse"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "1. MainPipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-25T13:08:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

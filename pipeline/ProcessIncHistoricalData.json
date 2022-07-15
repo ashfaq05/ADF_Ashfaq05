@@ -1,0 +1,214 @@
+{
+	"name": "ProcessIncHistoricalData",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetRecordsCountToProcess",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@Concat('select Count(1) AS \"rowcount\" from ', pipeline().parameters.ExtractionTableName)",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "Set rowcount",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetRecordsCountToProcess",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "rowcount",
+					"value": {
+						"value": "@string(activity('GetRecordsCountToProcess').output.firstrow.rowcount)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set iteration value",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set rowcount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "iterations",
+					"value": {
+						"value": "@range(1,add(div(int(variables('rowcount')),5000),1))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set iteration value",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('iterations')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "copy to kiazala hisb lob location  Records Loop",
+							"description": " ",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CustomerIncHistoricExtractionAllData",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": false,
+								"parameters": {
+									"ExtractionTableName": {
+										"value": "@pipeline().parameters.ExtractionTableName",
+										"type": "Expression"
+									},
+									"offset": {
+										"value": "@variables('offset')",
+										"type": "Expression"
+									},
+									"fetch": {
+										"value": "@variables('remainingrow')",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Set New offset for next iteration",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "copy to kiazala hisb lob location  Records Loop",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "offset",
+								"value": {
+									"value": "@string(mul(5000,item()))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set remaining rows",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set New offset for next iteration",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "remainingrow",
+								"value": {
+									"value": "@string(sub(int(variables('rowcount')),5000))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable3",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set remaining rows",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "rowcount",
+								"value": {
+									"value": "@variables('remainingrow')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"ExtractionTableName": {
+				"type": "string",
+				"defaultValue": "Kaizala.customerHistoricalExtract"
+			}
+		},
+		"variables": {
+			"offset": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"remainingrow": {
+				"type": "String",
+				"defaultValue": "5000"
+			},
+			"iterations": {
+				"type": "Array"
+			},
+			"rowcount": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "5. Kaizala Historic Data"
+		},
+		"annotations": []
+	}
+}

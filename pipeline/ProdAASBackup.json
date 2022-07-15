@@ -1,0 +1,26 @@
+{
+	"name": "ProdAASBackup",
+	"properties": {
+		"activities": [
+			{
+				"name": "ProdAASBackup",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://74370036-9913-40ac-aff9-a8f19e29d2d6.webhook.cid.azure-automation.net/webhooks?token=DbL24bIFbALzyojrp1xsTFSe44b%2baIhuH2OjtclxmEQ%3d",
+					"method": "POST",
+					"body": "{\"RESOURCEGROUPNAME\n\":\"mazvprgpdtpl\",\"ANALYSISSERVICESERVER\":\"asazure://westindia.asazure.windows.net/mazvpaasdtpl01\",\"ANALYSISSERVICEDATABASE\":\"TabularProjectMNM\"}"
+				}
+			}
+		],
+		"annotations": []
+	}
+}

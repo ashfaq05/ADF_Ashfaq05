@@ -1,0 +1,22 @@
+{
+	"name": "LS_FDWOnPrem",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AzureKeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "cfponpremconnectionstring2"
+			}
+		},
+		"connectVia": {
+			"referenceName": "FDWVMIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

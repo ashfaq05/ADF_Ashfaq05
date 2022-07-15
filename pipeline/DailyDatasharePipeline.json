@@ -1,0 +1,61 @@
+{
+	"name": "DailyDatasharePipeline",
+	"properties": {
+		"description": "Runs both scoring points pipeline and scored data share pipeline to Jayasimha for Analysis",
+		"activities": [
+			{
+				"name": "Execute Scoring Point Pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DailyAnalysisAllIndiaDatashare_scoringpoints",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Wait160sec",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Execute Scoring Point Pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 160
+				}
+			},
+			{
+				"name": "Execute Scored pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Wait160sec",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DailyAnalysisAllIndiaDatashare_scored",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Analysis Share data"
+		},
+		"annotations": []
+	}
+}

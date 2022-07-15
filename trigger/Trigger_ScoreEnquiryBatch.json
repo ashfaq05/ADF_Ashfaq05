@@ -1,0 +1,29 @@
+{
+	"name": "Trigger_ScoreEnquiryBatch",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipeline": {
+			"pipelineReference": {
+				"referenceName": "ScoreEnquiry",
+				"type": "PipelineReference"
+			},
+			"parameters": {
+				"StartTime": "@{formatDateTime(trigger().outputs.windowStartTime,'yyyy-mm-dd HH:mm:ss')}",
+				"EndTime": "@{formatDateTime(trigger().outputs.windowEndTime,'yyyy-mm-dd HH:mm:ss')}"
+			}
+		},
+		"type": "TumblingWindowTrigger",
+		"typeProperties": {
+			"frequency": "Hour",
+			"interval": 24,
+			"startTime": "1990-01-01T01:00:00Z",
+			"delay": "00:00:00",
+			"maxConcurrency": 1,
+			"retryPolicy": {
+				"intervalInSeconds": 30
+			},
+			"dependsOn": []
+		}
+	}
+}

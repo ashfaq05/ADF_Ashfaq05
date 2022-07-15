@@ -1,0 +1,9 @@
+{
+	"name": "mazvpadfdtpl",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d387b869-ddc8-4a9a-890f-34858752264e",
+		"tenantId": "8c4858b5-f020-483a-b7ef-71ded6e81767"
+	}
+}

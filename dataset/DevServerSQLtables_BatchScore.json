@@ -1,0 +1,268 @@
+{
+	"name": "DevServerSQLtables_BatchScore",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDBDevServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EnquiryGUID",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "CustomerGUID",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "DealerCode",
+				"type": "varchar"
+			},
+			{
+				"name": "DealerBranchCode",
+				"type": "varchar"
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "EnquiryLocalCode",
+				"type": "varchar"
+			},
+			{
+				"name": "CustCode",
+				"type": "varchar"
+			},
+			{
+				"name": "ModelCode",
+				"type": "varchar"
+			},
+			{
+				"name": "CurStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "Topcode",
+				"type": "varchar"
+			},
+			{
+				"name": "HPCategory",
+				"type": "varchar"
+			},
+			{
+				"name": "ExchangedManufacturer",
+				"type": "varchar"
+			},
+			{
+				"name": "CustAge",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IrrigatedOwned",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "NonIrrigatedOwned",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "BuyerSubTypeCode",
+				"type": "varchar"
+			},
+			{
+				"name": "ImpOwn",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ImpLease",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TypeOfCrops",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CropArea",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 2
+			},
+			{
+				"name": "IsMshree",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MShreeMembershipNo",
+				"type": "varchar"
+			},
+			{
+				"name": "IsReferencedByOthers",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "economic_potential_index",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "FinanceType",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "serviceHistory",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SalesOrderCreated",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Agri_bothuse",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Agri_selfuse",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Agri_hireuse",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Non-Agri_bothuse",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Non-Agri_selfuse",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Non-Agri_hireuse",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ImplmntCode1",
+				"type": "varchar"
+			},
+			{
+				"name": "ImplmntCode2",
+				"type": "varchar"
+			},
+			{
+				"name": "InterestedInImplement",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AgingOfEnquiry",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "StateCode",
+				"type": "varchar"
+			},
+			{
+				"name": "EnquiryDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "EnquiryType",
+				"type": "char"
+			},
+			{
+				"name": "EnquirySourceCode",
+				"type": "varchar"
+			},
+			{
+				"name": "ExpDop",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "SoilCode",
+				"type": "varchar"
+			},
+			{
+				"name": "CropCode",
+				"type": "varchar"
+			},
+			{
+				"name": "Acres",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 2
+			},
+			{
+				"name": "CustomerType",
+				"type": "varchar"
+			},
+			{
+				"name": "VillageCode",
+				"type": "varchar"
+			},
+			{
+				"name": "TehsilCode",
+				"type": "varchar"
+			},
+			{
+				"name": "DistrictCode",
+				"type": "varchar"
+			},
+			{
+				"name": "OfficeVillageCode",
+				"type": "varchar"
+			},
+			{
+				"name": "PreferredAddress",
+				"type": "varchar"
+			},
+			{
+				"name": "ExchangePriceRate",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 19
+			},
+			{
+				"name": "AssetToBeExchanged",
+				"type": "varchar"
+			},
+			{
+				"name": "RowID",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "PreSales",
+			"table": "BatchEnquiryScore_NewDailyValidation"
+		}
+	}
+}

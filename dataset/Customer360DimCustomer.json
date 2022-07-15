@@ -1,0 +1,26 @@
+{
+	"name": "Customer360DimCustomer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_KaizalaDataIngestion",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "DimCustomer.csv",
+				"folderPath": {
+					"value": "@concat('/DimCustomer/',formatDateTime(utcnow()))",
+					"type": "Expression"
+				},
+				"container": "extractcustomer360"
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

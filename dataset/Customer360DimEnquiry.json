@@ -1,0 +1,26 @@
+{
+	"name": "Customer360DimEnquiry",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_KaizalaDataIngestion",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "DimEnquiry.csv",
+				"folderPath": {
+					"value": "@concat('/DimEnquiry/',formatDateTime(UTCNOW()))",
+					"type": "Expression"
+				},
+				"container": "extractcustomer360"
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

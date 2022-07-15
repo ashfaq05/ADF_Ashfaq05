@@ -1,0 +1,16 @@
+{
+	"name": "EnquiryJson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "APIMService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "aiml/api/v4.0/predict/scoreModel"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

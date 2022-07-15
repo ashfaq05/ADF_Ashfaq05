@@ -1,0 +1,26 @@
+{
+	"name": "Customer360FactCustomer360",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_KaizalaDataIngestion",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "FactCustomer360.csv",
+				"folderPath": {
+					"value": "@concat('/FactCustomer360/',formatDateTime(UTCNOW()))",
+					"type": "Expression"
+				},
+				"container": "extractcustomer360"
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

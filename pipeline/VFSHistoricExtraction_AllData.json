@@ -1,0 +1,134 @@
+{
+	"name": "VFSHistoricExtraction_AllData",
+	"properties": {
+		"activities": [
+			{
+				"name": "Select First 5000 id",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT Id FROM ',pipeline().parameters.ExtractionTableName,' \n WHERE VFSJson is not null\norder by Id offset \n',pipeline().parameters.offset,' \nROWS FETCH NEXT ',pipeline().parameters.fetch,' ROWS ONLY ')",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach Id",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Select First 5000 id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Select First 5000 id').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data to file",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "select VFSJson from kaizala.VFSHistoricalExtract  WITH(NOLOCK) WHERE id =@{item().id}",
+										"type": "Expression"
+									},
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings",
+										"copyBehavior": "FlattenHierarchy"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"dataIntegrationUnits": 2
+							},
+							"inputs": [
+								{
+									"referenceName": "OutputAzurSQL",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": "Default"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "VFShistoricextract",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": "@item().Id"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"offset": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"fetch": {
+				"type": "string",
+				"defaultValue": "5000"
+			},
+			"ExtractionTableName": {
+				"type": "string",
+				"defaultValue": "kaizala.VFSHistoricalExtract"
+			}
+		},
+		"folder": {
+			"name": "5. Kaizala Historic Data"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-25T13:08:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

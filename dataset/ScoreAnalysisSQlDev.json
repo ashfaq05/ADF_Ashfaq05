@@ -1,0 +1,34 @@
+{
+	"name": "ScoreAnalysisSQlDev",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ScoreAnalysisSQlserverDev",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "StateCode",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "StateName",
+				"type": "varchar"
+			},
+			{
+				"name": "Festival",
+				"type": "varchar"
+			},
+			{
+				"name": "Importance",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "STG",
+			"table": "FestivalImportance"
+		}
+	}
+}

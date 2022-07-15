@@ -1,0 +1,19 @@
+{
+	"name": "LS_KaizalaDataExtraction",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureFunction",
+		"typeProperties": {
+			"functionAppUrl": "https://mazvpfncccpl04.azurewebsites.net",
+			"functionKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AzureKeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "KaizalaDataExtractionAPIKey"
+			}
+		}
+	}
+}

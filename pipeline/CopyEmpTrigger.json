@@ -1,0 +1,53 @@
+{
+	"name": "CopyEmpTrigger",
+	"properties": {
+		"description": "Single table copy",
+		"activities": [
+			{
+				"name": "Copy Emp",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select Count(1)\nfrom [dbo].[MST_SALESMAN_DTL]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlServerSink",
+						"preCopyScript": "Truncate table [STG].[PS_Enquiry_HDR_pna]",
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "InputOnPrem",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "OutputAzurSQL_EmpTrigger",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "[STG].[PS_Enquiry_HDR_pna]"
+						}
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-03-30T06:27:57Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

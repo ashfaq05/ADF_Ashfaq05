@@ -1,0 +1,26 @@
+{
+	"name": "DevAASBackup",
+	"properties": {
+		"activities": [
+			{
+				"name": "DevAAS",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://7c75779d-3d87-445d-b956-c51720ae8d4c.webhook.cid.azure-automation.net/webhooks?token=3ngtKAYHQ1VRAwwzJW6IeedB5kE41WbrKJQUOfZiTOM%3d",
+					"method": "POST",
+					"body": "{\"RESOURCEGROUPNAME\n\":\"mazvxdrgcfp01\",\"ANALYSISSERVICESERVER\":\"asazure://westindia.asazure.windows.net/mazvxdaasdplt01\",\"ANALYSISSERVICEDATABASE\":\"TabularProjectMNM\"}"
+				}
+			}
+		],
+		"annotations": []
+	}
+}

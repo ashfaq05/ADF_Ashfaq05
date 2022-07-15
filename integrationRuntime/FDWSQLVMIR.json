@@ -1,0 +1,7 @@
+{
+	"name": "FDWSQLVMIR",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "To connect to SQL VM on test env"
+	}
+}

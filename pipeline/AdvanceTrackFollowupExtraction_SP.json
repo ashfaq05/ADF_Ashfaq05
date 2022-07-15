@@ -1,0 +1,45 @@
+{
+	"name": "AdvanceTrackFollowupExtraction_SP",
+	"properties": {
+		"activities": [
+			{
+				"name": "Stored ADVTrackFol SP",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[Kaizala].[usp_LoadAdvanceTrackingIncrementalExtraction_AfterList1]",
+					"storedProcedureParameters": {
+						"PipelineRunId": {
+							"value": "@{pipeline().RunId}",
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": "@pipeline().Pipeline",
+							"type": "String"
+						},
+						"TriggerDatetime": {
+							"value": "@pipeline().TriggerTime",
+							"type": "Datetime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "5. Kaizala Historic Data"
+		},
+		"annotations": []
+	}
+}

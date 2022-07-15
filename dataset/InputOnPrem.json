@@ -1,0 +1,15 @@
+{
+	"name": "InputOnPrem",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_FDWOnPrem",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"typeProperties": {
+			"tableName": "[dbo].[CRM_PwccCust_Details]"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

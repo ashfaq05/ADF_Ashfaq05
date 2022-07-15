@@ -1,0 +1,30 @@
+{
+	"name": "ExecutePipelineISTtime",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Delete Files from kaizala Blob",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "ExecutePipelineSequence_WithKaizalaActivity",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 24,
+				"startTime": "2021-03-29T02:00:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}

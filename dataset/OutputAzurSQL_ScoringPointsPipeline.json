@@ -1,0 +1,242 @@
+{
+	"name": "OutputAzurSQL_ScoringPointsPipeline",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSQLDB",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TableName": {
+				"type": "String",
+				"defaultValue": "Default"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"structure": [
+			{
+				"name": "EnquiryGUID",
+				"type": "Guid"
+			},
+			{
+				"name": "CustomerGUID",
+				"type": "Guid"
+			},
+			{
+				"name": "DealerCode",
+				"type": "String"
+			},
+			{
+				"name": "DealerBranchCode",
+				"type": "String"
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "EnquiryLocalCode",
+				"type": "String"
+			},
+			{
+				"name": "CustCode",
+				"type": "String"
+			},
+			{
+				"name": "ModelCode",
+				"type": "String"
+			},
+			{
+				"name": "CurStatus",
+				"type": "String"
+			},
+			{
+				"name": "Topcode",
+				"type": "String"
+			},
+			{
+				"name": "HPCategory",
+				"type": "String"
+			},
+			{
+				"name": "ExchangedManufacturer",
+				"type": "String"
+			},
+			{
+				"name": "CustAge",
+				"type": "Int32"
+			},
+			{
+				"name": "IrrigatedOwned",
+				"type": "Decimal"
+			},
+			{
+				"name": "NonIrrigatedOwned",
+				"type": "Decimal"
+			},
+			{
+				"name": "BuyerSubTypeCode",
+				"type": "String"
+			},
+			{
+				"name": "ImpOwn",
+				"type": "Int32"
+			},
+			{
+				"name": "ImpLease",
+				"type": "Int32"
+			},
+			{
+				"name": "TypeOfCrops",
+				"type": "Int32"
+			},
+			{
+				"name": "CropArea",
+				"type": "Decimal"
+			},
+			{
+				"name": "IsMshree",
+				"type": "Int32"
+			},
+			{
+				"name": "MShreeMembershipNo",
+				"type": "String"
+			},
+			{
+				"name": "IsReferencedByOthers",
+				"type": "Int32"
+			},
+			{
+				"name": "economic_potential_index",
+				"type": "Double"
+			},
+			{
+				"name": "FinanceType",
+				"type": "Int32"
+			},
+			{
+				"name": "serviceHistory",
+				"type": "Int32"
+			},
+			{
+				"name": "SalesOrderCreated",
+				"type": "Int32"
+			},
+			{
+				"name": "Agri_bothuse",
+				"type": "Int32"
+			},
+			{
+				"name": "Agri_selfuse",
+				"type": "Int32"
+			},
+			{
+				"name": "Agri_hireuse",
+				"type": "Int32"
+			},
+			{
+				"name": "Non-Agri_bothuse",
+				"type": "Int32"
+			},
+			{
+				"name": "Non-Agri_selfuse",
+				"type": "Int32"
+			},
+			{
+				"name": "Non-Agri_hireuse",
+				"type": "Int32"
+			},
+			{
+				"name": "ImplmntCode1",
+				"type": "String"
+			},
+			{
+				"name": "ImplmntCode2",
+				"type": "String"
+			},
+			{
+				"name": "InterestedInImplement",
+				"type": "Int32"
+			},
+			{
+				"name": "AgingOfEnquiry",
+				"type": "Int32"
+			},
+			{
+				"name": "StateCode",
+				"type": "String"
+			},
+			{
+				"name": "EnquiryDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "EnquiryType",
+				"type": "String"
+			},
+			{
+				"name": "EnquirySourceCode",
+				"type": "String"
+			},
+			{
+				"name": "ExpDop",
+				"type": "DateTime"
+			},
+			{
+				"name": "SoilCode",
+				"type": "String"
+			},
+			{
+				"name": "CropCode",
+				"type": "String"
+			},
+			{
+				"name": "Acres",
+				"type": "Decimal"
+			},
+			{
+				"name": "CustomerType",
+				"type": "String"
+			},
+			{
+				"name": "VillageCode",
+				"type": "String"
+			},
+			{
+				"name": "TehsilCode",
+				"type": "String"
+			},
+			{
+				"name": "DistrictCode",
+				"type": "String"
+			},
+			{
+				"name": "OfficeVillageCode",
+				"type": "String"
+			},
+			{
+				"name": "PreferredAddress",
+				"type": "String"
+			},
+			{
+				"name": "ExchangePriceRate",
+				"type": "Decimal"
+			},
+			{
+				"name": "AssetToBeExchanged",
+				"type": "String"
+			},
+			{
+				"name": "RowID",
+				"type": "Int32"
+			}
+		],
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().TableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

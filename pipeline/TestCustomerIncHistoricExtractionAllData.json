@@ -1,0 +1,135 @@
+{
+	"name": "TestCustomerIncHistoricExtractionAllData",
+	"properties": {
+		"activities": [
+			{
+				"name": "Select First 5000 id",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT Id FROM ',pipeline().parameters.ExtractionTableName,' order by Id offset ',pipeline().parameters.offset,' ROWS FETCH NEXT ' ,pipeline().parameters.fetch, ' ROWS ONLY ')",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach Id",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Select First 5000 id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Select First 5000 id').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Copy data to file",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "Select '['+CustomerJson+']' FROM [Kaizala].[customerHistoricalExtract_Mshree]  WITH(NOLOCK) WHERE id =@{item().id}",
+										"type": "Expression"
+									},
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings",
+										"copyBehavior": "FlattenHierarchy"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"parallelCopies": 3
+							},
+							"inputs": [
+								{
+									"referenceName": "OutputAzurSQL",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": "Default"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "TestCustomerHistoricExtract",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": "@item().Id"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"ExtractionTableName": {
+				"type": "string",
+				"defaultValue": "Kaizala.customerHistoricalExtract_Mshree"
+			},
+			"offset": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"fetch": {
+				"type": "string",
+				"defaultValue": "5000"
+			}
+		},
+		"folder": {
+			"name": "5. Kaizala Historic Data"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-25T13:08:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

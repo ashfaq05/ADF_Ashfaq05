@@ -1,0 +1,16 @@
+{
+	"name": "LS_SQLVM_FDW_BACKUP",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=mazvtwvmcdtpl02;initial catalog=FDWDB2020;user id=Devuser1",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0YjFlMzNhNy1lMTRiLTQ1MjUtOGQ3NS1jNDkyNmM5OTVlN2UiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "FDWSQLVMIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

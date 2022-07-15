@@ -1,0 +1,24 @@
+{
+	"name": "BackupTest",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "DevAASBackup",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2021-12-02T13:30:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}

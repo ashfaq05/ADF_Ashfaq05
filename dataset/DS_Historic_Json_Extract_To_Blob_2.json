@@ -1,0 +1,19 @@
+{
+	"name": "DS_Historic_Json_Extract_To_Blob_2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_KaizalaDataIngestion",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "*",
+				"container": "kaizalahistoricdata2"
+			}
+		},
+		"schema": {}
+	}
+}

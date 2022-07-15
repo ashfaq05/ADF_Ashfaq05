@@ -1,0 +1,29 @@
+{
+	"name": "DEDUP_CustProfile_Sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_KaizalaDataIngestion",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "CustProfile.csv",
+				"folderPath": {
+					"value": "@{concat('/CustProfile/',formatDateTime(UTCNOW()))}",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "extractdedupe",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

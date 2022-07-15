@@ -1,0 +1,309 @@
+{
+	"name": "ScoreEnquiryPipelineForIncrementalEnquiry",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetEnquiries",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "GetLastPSProcessDate",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[AAP].[usp_StageBatchEnquiries_v4]",
+					"storedProcedureParameters": {
+						"EndDate": {
+							"value": {
+								"value": "@activity('GetMaxEnquiryDate').output.firstrow.MaxDate",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"StartDate": {
+							"value": {
+								"value": "@activity('GetLastPSProcessDate').output.firstrow.ProcessedLastDate",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "GetLastPSProcessDate",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "GetMaxEnquiryDate",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select FORMAT(Max(EnquiryDate),'yyyy-MM-dd')  AS ProcessedLastDate from Presales.EnquiryHeader Where Is_PS_Processed=1",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "GetMaxEnquiryDate",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select FORMAT(LastDateUpdatedValue,'yyyy-MM-dd') As MaxDate from ETL.PipelineTables where Id=13",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "GetRecordsCountToProcess",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "GetEnquiries",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@Concat('select Count(1) AS \"rowcount\" from PreSales.BatchEnquiryScore')",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "Set rowcount",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetRecordsCountToProcess",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "rowcount",
+					"value": {
+						"value": "@string(activity('GetRecordsCountToProcess').output.firstrow.rowcount)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set iteration value",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set rowcount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "iterations",
+					"value": {
+						"value": "@range(1,add(div(int(variables('rowcount')),5000),1))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set iteration value",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('iterations')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Execute Score Calculation",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PropensityNew",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": false
+							}
+						},
+						{
+							"name": "Set New offset for next iteration",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Execute Score Calculation",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "offset",
+								"value": {
+									"value": "@string(mul(5000,item()))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set remaining rows",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set New offset for next iteration",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "remainingrow",
+								"value": {
+									"value": "@string(sub(int(variables('rowcount')),5000))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable3",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set remaining rows",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "rowcount",
+								"value": {
+									"value": "@variables('remainingrow')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"offset": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"remainingrow": {
+				"type": "String",
+				"defaultValue": "5000"
+			},
+			"iterations": {
+				"type": "Array"
+			},
+			"rowcount": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "4. AAP - AI&ML"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

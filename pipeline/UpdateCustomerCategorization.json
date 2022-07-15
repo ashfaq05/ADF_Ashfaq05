@@ -1,0 +1,49 @@
+{
+	"name": "UpdateCustomerCategorization",
+	"properties": {
+		"activities": [
+			{
+				"name": "Update Customer Categorization",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[AAP].[usp_UpdateCustomerCategorization]",
+					"storedProcedureParameters": {
+						"P1": {
+							"value": "30",
+							"type": "Int32"
+						},
+						"P2": {
+							"value": "40",
+							"type": "Int32"
+						},
+						"P3": {
+							"value": "30",
+							"type": "Int32"
+						},
+						"Duration": {
+							"value": "0",
+							"type": "Int32"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQLDB",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "1. MainPipelines"
+		},
+		"annotations": []
+	}
+}

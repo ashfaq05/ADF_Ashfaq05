@@ -1,0 +1,29 @@
+{
+	"name": "Aprod40sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureProdlink",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EnquiryLocalCode",
+				"type": "varchar"
+			},
+			{
+				"name": "DealerCode",
+				"type": "varchar"
+			},
+			{
+				"name": "DealerBranchCode",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Testkey5"
+		}
+	}
+}

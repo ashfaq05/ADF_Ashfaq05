@@ -1,0 +1,43 @@
+{
+	"name": "SourceDataset_5lc",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "enquiryjson"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"CustomerId": {
+					"type": "string"
+				},
+				"EnquiryId": {
+					"type": "string"
+				},
+				"FdwEnquiryId": {
+					"type": "string"
+				},
+				"FollowUpDueDate": {
+					"type": "string"
+				},
+				"DealerCode": {
+					"type": "string"
+				},
+				"DealerBranchCode": {
+					"type": "string"
+				},
+				"State": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

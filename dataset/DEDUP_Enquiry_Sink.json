@@ -1,0 +1,26 @@
+{
+	"name": "DEDUP_Enquiry_Sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_KaizalaDataIngestion",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Enquiry.csv",
+				"folderPath": {
+					"value": "@{concat('/Enquiry/',formatDateTime(UTCNOW()))}",
+					"type": "Expression"
+				},
+				"container": "extractdedupe"
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

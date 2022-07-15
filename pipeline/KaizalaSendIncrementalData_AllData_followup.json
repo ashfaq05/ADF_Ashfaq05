@@ -1,0 +1,213 @@
+{
+	"name": "KaizalaSendIncrementalData_AllData_followup",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetRecordsCountToProcessFollowup",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@Concat('select Count(1) AS \"rowcount\" from Kaizala.FollowupExtract where IsProcessed=0')",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "Set rowcount_Followup",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetRecordsCountToProcessFollowup",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "rowcount",
+					"value": {
+						"value": "@string(activity('GetRecordsCountToProcessFollowup').output.firstrow.rowcount)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set iteration value_Followup",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set rowcount_Followup",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "iterations",
+					"value": {
+						"value": "@range(1,add(div(int(variables('rowcount')),5000),1))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1_Followup",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set iteration value_Followup",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('iterations')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Execute Followup Records Loop",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "KaizalaSendIncrementalData_Followup",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"ExtractionTableName": {
+										"value": "Kaizala.FollowUpExtract",
+										"type": "Expression"
+									},
+									"JsonColumnName": "FollowUpJson",
+									"APIEventType": "IngestFollowup",
+									"Entity": "Followup",
+									"offset": {
+										"value": "@variables('offset')",
+										"type": "Expression"
+									},
+									"fetch": {
+										"value": "@variables('remainingrow')",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Set New offset for next iteration_copy1_copy1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Execute Followup Records Loop",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "offset",
+								"value": {
+									"value": "@string(mul(5000,item()))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set remaining rows_copy1_copy1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set New offset for next iteration_copy1_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "remainingrow",
+								"value": {
+									"value": "@string(sub(int(variables('rowcount')),5000))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable3_copy1_copy1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set remaining rows_copy1_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "rowcount",
+								"value": {
+									"value": "@variables('remainingrow')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"concurrency": 1,
+		"variables": {
+			"offset": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"remainingrow": {
+				"type": "String",
+				"defaultValue": "5000"
+			},
+			"iterations": {
+				"type": "Array"
+			},
+			"rowcount": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "1. MainPipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-25T13:08:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

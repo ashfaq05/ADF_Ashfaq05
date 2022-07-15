@@ -1,0 +1,352 @@
+{
+	"name": "Source40ktest01",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Key19.csv",
+				"container": "40ktest01"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "EnquiryLocalCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "DealerCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "EnquiryOldCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "LocCode_C",
+				"type": "String"
+			},
+			{
+				"name": "EnquiryType_C",
+				"type": "String"
+			},
+			{
+				"name": "EnquiryDate_D",
+				"type": "String"
+			},
+			{
+				"name": "RefCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "CustCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "ServerCustCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "SmanCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "EnquirySourcePrefix_VC",
+				"type": "String"
+			},
+			{
+				"name": "EnquirySourceCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "CampCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "RefName_VC",
+				"type": "String"
+			},
+			{
+				"name": "RefCoName_VC",
+				"type": "String"
+			},
+			{
+				"name": "InflncrName_VC",
+				"type": "String"
+			},
+			{
+				"name": "InflncrCoName_VC",
+				"type": "String"
+			},
+			{
+				"name": "TopPrefix_VC",
+				"type": "String"
+			},
+			{
+				"name": "TopCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "TobPrefix_VC",
+				"type": "String"
+			},
+			{
+				"name": "BuyerSubTypeCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "InstName_VC",
+				"type": "String"
+			},
+			{
+				"name": "ModelCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "ImplmntCode1_VC",
+				"type": "String"
+			},
+			{
+				"name": "ImplmntCode2_VC",
+				"type": "String"
+			},
+			{
+				"name": "ExpDop_D",
+				"type": "String"
+			},
+			{
+				"name": "InitStatus_VC",
+				"type": "String"
+			},
+			{
+				"name": "FirstVisit_D",
+				"type": "String"
+			},
+			{
+				"name": "CurStatus_C",
+				"type": "String"
+			},
+			{
+				"name": "NextVisitDate_D",
+				"type": "String"
+			},
+			{
+				"name": "ActiveFlag_C",
+				"type": "String"
+			},
+			{
+				"name": "LastModified_D",
+				"type": "String"
+			},
+			{
+				"name": "UserId_VC",
+				"type": "String"
+			},
+			{
+				"name": "DocStatusCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "DealerBranchCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "JobCard_VC",
+				"type": "String"
+			},
+			{
+				"name": "MsrCustCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "PadRefCard_VC",
+				"type": "String"
+			},
+			{
+				"name": "MaOneGroupCd_VC",
+				"type": "String"
+			},
+			{
+				"name": "PwccCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "IsDelete_C",
+				"type": "String"
+			},
+			{
+				"name": "SubmitType_C",
+				"type": "String"
+			},
+			{
+				"name": "SyncStatus_C",
+				"type": "String"
+			},
+			{
+				"name": "SyncRemark_VC",
+				"type": "String"
+			},
+			{
+				"name": "SectorId_I",
+				"type": "String"
+			},
+			{
+				"name": "CreatedBy_VC",
+				"type": "String"
+			},
+			{
+				"name": "CreatedDt_D",
+				"type": "String"
+			},
+			{
+				"name": "ModifiedBy_VC",
+				"type": "String"
+			},
+			{
+				"name": "ModifiedDt_D",
+				"type": "String"
+			},
+			{
+				"name": "EnquiryFrom",
+				"type": "String"
+			},
+			{
+				"name": "MDMSSyncStatus",
+				"type": "String"
+			},
+			{
+				"name": "MechanicName_VC",
+				"type": "String"
+			},
+			{
+				"name": "CustSmsStatus_C",
+				"type": "String"
+			},
+			{
+				"name": "salesmanSmsStatus_C",
+				"type": "String"
+			},
+			{
+				"name": "MsrDlrCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "brokerCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "CustContactReason_VC",
+				"type": "String"
+			},
+			{
+				"name": "CustContactSubReason_VC",
+				"type": "String"
+			},
+			{
+				"name": "Longitude",
+				"type": "String"
+			},
+			{
+				"name": "Latitude",
+				"type": "String"
+			},
+			{
+				"name": "KAMCustomerGroupID",
+				"type": "String"
+			},
+			{
+				"name": "KAMID",
+				"type": "String"
+			},
+			{
+				"name": "PURCHASEDATE_D",
+				"type": "String"
+			},
+			{
+				"name": "BrokerMblNo",
+				"type": "String"
+			},
+			{
+				"name": "IsFinanceRequired",
+				"type": "String"
+			},
+			{
+				"name": "IsDemoRequired",
+				"type": "String"
+			},
+			{
+				"name": "NewsPaper",
+				"type": "String"
+			},
+			{
+				"name": "LeadRemarks",
+				"type": "String"
+			},
+			{
+				"name": "LeadLocalCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "REFCUST_ID",
+				"type": "String"
+			},
+			{
+				"name": "ENQUIRY_TYPE_VC",
+				"type": "String"
+			},
+			{
+				"name": "TechMaster_Id",
+				"type": "String"
+			},
+			{
+				"name": "KYCStatus",
+				"type": "String"
+			},
+			{
+				"name": "DocType",
+				"type": "String"
+			},
+			{
+				"name": "DocImage1",
+				"type": "String"
+			},
+			{
+				"name": "DocImage2",
+				"type": "String"
+			},
+			{
+				"name": "DocsPending",
+				"type": "String"
+			},
+			{
+				"name": "CFPEnquiryId",
+				"type": "String"
+			},
+			{
+				"name": "PropensityScore",
+				"type": "String"
+			},
+			{
+				"name": "InitPropensityCategory",
+				"type": "String"
+			},
+			{
+				"name": "CurPropensityCategory",
+				"type": "String"
+			},
+			{
+				"name": "Mshree_refEnrollmentNum",
+				"type": "String"
+			}
+		]
+	}
+}

@@ -1,0 +1,314 @@
+{
+	"name": "DS_CCP_CosmosDbConnection",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_CCP_CosmosDbConnection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"customerId": {
+					"type": "string"
+				},
+				"crops": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"cropType": {
+								"type": "string"
+							},
+							"cropAcres": {
+								"type": "number"
+							},
+							"cropQuantityPerAcres": {
+								"type": "number"
+							},
+							"cropSellingPrice": {
+								"type": "number"
+							}
+						}
+					}
+				},
+				"fdwCustomerId": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string"
+				},
+				"mobileNumber": {
+					"type": "string"
+				},
+				"category": {
+					"type": "string"
+				},
+				"salutation": {
+					"type": "string"
+				},
+				"firstName": {
+					"type": "string"
+				},
+				"lastName": {
+					"type": "string"
+				},
+				"middleName": {
+					"type": "string"
+				},
+				"fatherOrHusbandName": {
+					"type": "string"
+				},
+				"mobileType": {
+					"type": "string"
+				},
+				"preferredAddress": {
+					"type": "string"
+				},
+				"email": {
+					"type": "string"
+				},
+				"residenceAddress": {
+					"type": "object",
+					"properties": {
+						"address": {
+							"type": "string"
+						},
+						"village": {
+							"type": "string"
+						},
+						"tehsil": {
+							"type": "string"
+						},
+						"district": {
+							"type": "string"
+						},
+						"state": {
+							"type": "string"
+						},
+						"pincode": {
+							"type": "string"
+						}
+					}
+				},
+				"officeAddress": {
+					"type": "object",
+					"properties": {
+						"address": {
+							"type": "string"
+						},
+						"village": {
+							"type": "string"
+						},
+						"tehsil": {
+							"type": "string"
+						},
+						"district": {
+							"type": "string"
+						},
+						"state": {
+							"type": "string"
+						},
+						"pincode": {
+							"type": "string"
+						}
+					}
+				},
+				"dateOfBirth": {
+					"type": "string"
+				},
+				"gender": {
+					"type": "string"
+				},
+				"maritalStatus": {
+					"type": "string"
+				},
+				"weddingDate": {
+					"type": "null"
+				},
+				"education": {
+					"type": "string"
+				},
+				"occupation": {
+					"type": "string"
+				},
+				"landOwnerShip": {
+					"type": "number"
+				},
+				"propertyOwnership": {
+					"type": "string"
+				},
+				"currentLoans": {
+					"type": "string"
+				},
+				"loanPurpose": {
+					"type": "string"
+				},
+				"familyIncome": {
+					"type": "null"
+				},
+				"creditLimit": {
+					"type": "integer"
+				},
+				"gstin": {
+					"type": "null"
+				},
+				"idProof": {
+					"type": "string"
+				},
+				"idCardNumber": {
+					"type": "null"
+				},
+				"totalFamilySize": {
+					"type": "integer"
+				},
+				"noOfChildren": {
+					"type": "integer"
+				},
+				"noOfTwoWheelers": {
+					"type": "integer"
+				},
+				"noOfFourWheelers": {
+					"type": "integer"
+				},
+				"currentCompany": {
+					"type": "string"
+				},
+				"totalLandOwned": {
+					"type": "null"
+				},
+				"totalLandLeased": {
+					"type": "number"
+				},
+				"totalLandOwnedByFamily": {
+					"type": "number"
+				},
+				"irrigatedLandOwned": {
+					"type": "number"
+				},
+				"irrigatedLandLeased": {
+					"type": "number"
+				},
+				"nonirrigatedLandOwned": {
+					"type": "null"
+				},
+				"soilType": {
+					"type": "array"
+				},
+				"tractorsOwned": {
+					"type": "array"
+				},
+				"vehiclesowned": {
+					"type": "array"
+				},
+				"implementsUsed": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"implementsOwned": {
+					"type": "string"
+				},
+				"implementsHired": {
+					"type": "string"
+				},
+				"implementsRemarks": {
+					"type": "null"
+				},
+				"familyMembers": {
+					"type": "array"
+				},
+				"typeOfHouse": {
+					"type": "string"
+				},
+				"durables": {
+					"type": "array"
+				},
+				"mShreeMembershipNo": {
+					"type": "null"
+				},
+				"mShreeEnrollmentDate": {
+					"type": "null"
+				},
+				"mShreePointsEarned": {
+					"type": "null"
+				},
+				"mShreePointsRedeemed": {
+					"type": "null"
+				},
+				"mShreeBalancePoints": {
+					"type": "null"
+				},
+				"mShreeCategory": {
+					"type": "null"
+				},
+				"mShreeSpecialCouponsAvailable": {
+					"type": "integer"
+				},
+				"isMshree": {
+					"type": "null"
+				},
+				"customerLocation": {
+					"type": "object",
+					"properties": {
+						"Latitude": {
+							"type": "string"
+						},
+						"Longitude": {
+							"type": "string"
+						}
+					}
+				},
+				"profilePictureUrl": {
+					"type": "null"
+				},
+				"buyerType": {
+					"type": "string"
+				},
+				"designation": {
+					"type": "string"
+				},
+				"tractorUsageApplications": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"applicationID": {
+								"type": "string"
+							},
+							"applicationType": {
+								"type": "integer"
+							}
+						}
+					}
+				},
+				"docType": {
+					"type": "string"
+				},
+				"partitionId": {
+					"type": "string"
+				},
+				"ttl": {
+					"type": "integer"
+				},
+				"modifiedBy": {
+					"type": "string"
+				},
+				"lastModifiedDate": {
+					"type": "string"
+				},
+				"createdDate": {
+					"type": "string"
+				},
+				"sourceOfEvent": {
+					"type": "integer"
+				}
+			}
+		},
+		"typeProperties": {
+			"collectionName": "ccp"
+		}
+	}
+}

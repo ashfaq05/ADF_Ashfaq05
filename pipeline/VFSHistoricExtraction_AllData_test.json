@@ -1,0 +1,58 @@
+{
+	"name": "VFSHistoricExtraction_AllData_test",
+	"properties": {
+		"activities": [
+			{
+				"name": "Select First 5000 id",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT Id FROM ',pipeline().parameters.ExtractionTableName,' \norder by Id offset \n',pipeline().parameters.offset,' \nROWS FETCH NEXT ',pipeline().parameters.fetch,' ROWS ONLY ')",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OutputAzurSQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Default"
+						}
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"parameters": {
+			"offset": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"fetch": {
+				"type": "string",
+				"defaultValue": "5000"
+			},
+			"ExtractionTableName": {
+				"type": "string",
+				"defaultValue": "kaizala.VFSHistoricalExtract"
+			}
+		},
+		"folder": {
+			"name": "5. Kaizala Historic Data"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-25T13:08:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

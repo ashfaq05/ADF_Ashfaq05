@@ -1,0 +1,37 @@
+{
+	"name": "AAS-2",
+	"properties": {
+		"activities": [
+			{
+				"name": "ProdAASCubeRefresh_FULL",
+				"description": "Used to connect to Runbooks in Automation accounts and execute the AAS scheduler manual",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://74370036-9913-40ac-aff9-a8f19e29d2d6.webhook.cid.azure-automation.net/webhooks?token=LqjyhYfOor7OaTEHDltGDxIPKzHkK3aFVfXeHzVvIDs%3d",
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"AnalysisServicesDatabaseName": "TabularProjectMNM",
+						"AnalysisServicesServer": "asazure://westindia.asazure.windows.net/mazvpaasdtpl01",
+						"DatabaseRefreshType": "FULL"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "7. Analysis Service"
+		},
+		"annotations": []
+	}
+}

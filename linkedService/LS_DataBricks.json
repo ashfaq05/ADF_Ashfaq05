@@ -1,0 +1,21 @@
+{
+	"name": "LS_DataBricks",
+	"properties": {
+		"description": "Connection to the Databricks Notebook",
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-5010680161139581.1.azuredatabricks.net",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AzureKeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "DataBricksAccessToken"
+			},
+			"existingClusterId": "0622-143948-bet615"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
+}

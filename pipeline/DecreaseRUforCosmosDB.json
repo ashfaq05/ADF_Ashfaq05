@@ -1,0 +1,27 @@
+{
+	"name": "DecreaseRUforCosmosDB",
+	"properties": {
+		"activities": [
+			{
+				"name": "ProdCosmosIncreaseRU",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://74370036-9913-40ac-aff9-a8f19e29d2d6.webhook.cid.azure-automation.net/webhooks?token=BH6mEs9Xb%2bDa9d1xMGJ8SKezGyqwxyP4e3F6e2Jc9Ig%3d",
+					"method": "POST",
+					"body": "{\"RESOURCEGROUPNAME\n\":\"mazvprgpccpl\",\n\"AccountName\":\"mazvpcdbccpl\",\n\"DB\":\"cfp\",\n\"CONT\":\"ccp\",\n\"RU\":700}",
+					"disableCertValidation": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}

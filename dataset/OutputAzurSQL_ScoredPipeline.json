@@ -1,0 +1,378 @@
+{
+	"name": "OutputAzurSQL_ScoredPipeline",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSQLDB",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TableName": {
+				"type": "String",
+				"defaultValue": "Default"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"structure": [
+			{
+				"name": "EnquiryLocalCode",
+				"type": "String"
+			},
+			{
+				"name": "DealerCode",
+				"type": "String"
+			},
+			{
+				"name": "EnquiryOldCode",
+				"type": "String"
+			},
+			{
+				"name": "LocCode",
+				"type": "String"
+			},
+			{
+				"name": "EnquiryType",
+				"type": "String"
+			},
+			{
+				"name": "EnquiryDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "RefCode",
+				"type": "String"
+			},
+			{
+				"name": "CustCode",
+				"type": "String"
+			},
+			{
+				"name": "ServerCustCode",
+				"type": "String"
+			},
+			{
+				"name": "SmanCode",
+				"type": "String"
+			},
+			{
+				"name": "EnquirySourcePrefix",
+				"type": "String"
+			},
+			{
+				"name": "EnquirySourceCode",
+				"type": "String"
+			},
+			{
+				"name": "CampCode",
+				"type": "String"
+			},
+			{
+				"name": "RefName",
+				"type": "String"
+			},
+			{
+				"name": "RefCoName",
+				"type": "String"
+			},
+			{
+				"name": "InflncrName",
+				"type": "String"
+			},
+			{
+				"name": "InflncrCoName",
+				"type": "String"
+			},
+			{
+				"name": "TopPrefix",
+				"type": "String"
+			},
+			{
+				"name": "TopCode",
+				"type": "String"
+			},
+			{
+				"name": "TobPrefix",
+				"type": "String"
+			},
+			{
+				"name": "BuyerSubTypeCode",
+				"type": "String"
+			},
+			{
+				"name": "InstName",
+				"type": "String"
+			},
+			{
+				"name": "ModelCode",
+				"type": "String"
+			},
+			{
+				"name": "ImplmntCode1",
+				"type": "String"
+			},
+			{
+				"name": "ImplmntCode2",
+				"type": "String"
+			},
+			{
+				"name": "ExpDop",
+				"type": "DateTime"
+			},
+			{
+				"name": "InitStatus",
+				"type": "String"
+			},
+			{
+				"name": "FirstVisit",
+				"type": "DateTime"
+			},
+			{
+				"name": "CurStatus",
+				"type": "String"
+			},
+			{
+				"name": "NextVisitDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "ActiveFlag",
+				"type": "String"
+			},
+			{
+				"name": "LastModified",
+				"type": "DateTime"
+			},
+			{
+				"name": "UserId",
+				"type": "String"
+			},
+			{
+				"name": "DocStatusCode",
+				"type": "String"
+			},
+			{
+				"name": "DealerBranchCode",
+				"type": "String"
+			},
+			{
+				"name": "JobCard",
+				"type": "String"
+			},
+			{
+				"name": "MsrCustCode",
+				"type": "String"
+			},
+			{
+				"name": "PadRefCard",
+				"type": "String"
+			},
+			{
+				"name": "MaOneGroupCd",
+				"type": "String"
+			},
+			{
+				"name": "PwccCode",
+				"type": "String"
+			},
+			{
+				"name": "IsDelete",
+				"type": "String"
+			},
+			{
+				"name": "SubmitType",
+				"type": "String"
+			},
+			{
+				"name": "SyncStatus",
+				"type": "String"
+			},
+			{
+				"name": "SyncRemark",
+				"type": "String"
+			},
+			{
+				"name": "SectorId",
+				"type": "Int32"
+			},
+			{
+				"name": "CreatedBy",
+				"type": "String"
+			},
+			{
+				"name": "CreatedDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "ModifiedBy",
+				"type": "String"
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "EnquiryFrom",
+				"type": "String"
+			},
+			{
+				"name": "MDMSSyncStatus",
+				"type": "String"
+			},
+			{
+				"name": "MechanicName",
+				"type": "String"
+			},
+			{
+				"name": "CustSmsStatus",
+				"type": "String"
+			},
+			{
+				"name": "salesmanSmsStatus",
+				"type": "String"
+			},
+			{
+				"name": "MsrDlrCode",
+				"type": "String"
+			},
+			{
+				"name": "brokerCode",
+				"type": "String"
+			},
+			{
+				"name": "CustContactReason",
+				"type": "String"
+			},
+			{
+				"name": "CustContactSubReason",
+				"type": "String"
+			},
+			{
+				"name": "Longitude",
+				"type": "String"
+			},
+			{
+				"name": "Latitude",
+				"type": "String"
+			},
+			{
+				"name": "DocsPending",
+				"type": "Boolean"
+			},
+			{
+				"name": "DocType",
+				"type": "String"
+			},
+			{
+				"name": "DocImage1",
+				"type": "String"
+			},
+			{
+				"name": "DocImage2",
+				"type": "String"
+			},
+			{
+				"name": "PropensityScore",
+				"type": "Double"
+			},
+			{
+				"name": "CFPEnquiryId",
+				"type": "String"
+			},
+			{
+				"name": "EnquiryGUID",
+				"type": "Guid"
+			},
+			{
+				"name": "CustomerGUID",
+				"type": "Guid"
+			},
+			{
+				"name": "DestCreatedDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "CFPIsMaster",
+				"type": "Boolean"
+			},
+			{
+				"name": "CFPDeDupeID",
+				"type": "String"
+			},
+			{
+				"name": "KAMCustomerGroupID",
+				"type": "String"
+			},
+			{
+				"name": "KAMID",
+				"type": "Int32"
+			},
+			{
+				"name": "PURCHASEDATE",
+				"type": "DateTime"
+			},
+			{
+				"name": "BrokerMblNo",
+				"type": "String"
+			},
+			{
+				"name": "IsDemoRequired",
+				"type": "String"
+			},
+			{
+				"name": "IsFinanceRequired",
+				"type": "String"
+			},
+			{
+				"name": "LeadLocalCode_VC",
+				"type": "String"
+			},
+			{
+				"name": "LeadRemarks",
+				"type": "String"
+			},
+			{
+				"name": "NewsPaper",
+				"type": "String"
+			},
+			{
+				"name": "REFCUST_ID",
+				"type": "String"
+			},
+			{
+				"name": "CustomerCategorization",
+				"type": "String"
+			},
+			{
+				"name": "Is_PS_Processed",
+				"type": "Int32"
+			},
+			{
+				"name": "PS_LastProcessedDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "ENQUIRY_TYPE_VC",
+				"type": "String"
+			},
+			{
+				"name": "InitialPropensityScore",
+				"type": "Double"
+			},
+			{
+				"name": "ResultCode",
+				"type": "String"
+			},
+			{
+				"name": "EEReasonName",
+				"type": "String"
+			}
+		],
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().TableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,31 @@
+{
+	"name": "kaizalaDataIngestion_pwccvisitdetails_trigger",
+	"properties": {
+		"description": "pwcc events trigger",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "KaizalaDataIngestionToStaging",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"FilePath": "@triggerBody().fileName",
+					"ProcName": "Kaizala.usp_LoadPWCCVisitToStg",
+					"FolderPath": "@triggerBody().folderPath"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/pwccvisitdetails/blobs/",
+			"blobPathEndsWith": ".json",
+			"ignoreEmptyBlobs": false,
+			"scope": "/subscriptions/0dfed373-7f38-429e-8704-6524988a0a6a/resourceGroups/mazvprgpccpl/providers/Microsoft.Storage/storageAccounts/mazvpstaccpl02",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

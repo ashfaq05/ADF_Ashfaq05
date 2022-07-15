@@ -1,0 +1,24 @@
+{
+	"name": "APIMService",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://mazvpapmccpl.azure-api.net",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "AadServicePrincipal",
+			"servicePrincipalId": "1da9fd11-4836-414a-9180-37e7c8c8da6d",
+			"servicePrincipalKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AzureKeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "ADFModelClientAppSecret"
+			},
+			"tenant": "8c4858b5-f020-483a-b7ef-71ded6e81767",
+			"aadResourceId": "api://72020962-3e32-47ff-9a98-c2de70a08761"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
+}

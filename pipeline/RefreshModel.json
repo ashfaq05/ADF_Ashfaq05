@@ -1,0 +1,60 @@
+{
+	"name": "RefreshModel",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute AAS Clear",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "AAS-1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute AAS Full",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Wait 300 Second",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "AAS-2",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Wait 300 Second",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Execute AAS Clear",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 300
+				}
+			}
+		],
+		"folder": {
+			"name": "7. Analysis Service"
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"name": "LS_CCP_CosmosDbConnection",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "CosmosDb",
+		"typeProperties": {
+			"connectionString": "AccountEndpoint=https://mazvpcdbccpl.documents.azure.com:443/;Database=cfp;",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1BWlZQQURGRFRQTF8xN2M1MjRhNy0yMDA4LTRmMGMtODY2NC0yODU5M2IxMmVhZGQiDQp9"
+		}
+	}
+}

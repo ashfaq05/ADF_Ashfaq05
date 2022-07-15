@@ -1,0 +1,19 @@
+{
+	"name": "EnquiryScore",
+	"properties": {
+		"description": "to ingest WEBAPI data",
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "enquiryscore"
+			}
+		},
+		"schema": {}
+	}
+}
